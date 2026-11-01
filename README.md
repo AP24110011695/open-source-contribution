@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 21 open pull requests across 6 projects · 7 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 24 open pull requests across 7 projects · 9 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -43,7 +43,7 @@ The plan: learn four different contribution cultures end to end — an AI agent 
 | [#8848 — publish JSON checkpoints atomically](https://github.com/crewAIInc/crewAI/pull/8848) | Interrupted writes left truncated/corrupt checkpoint files — fixes [#8846](https://github.com/crewAIInc/crewAI/issues/8846) | Open · CI green · in review |
 | [#8849 — tolerate malformed tool-call arguments in history replay](https://github.com/crewAIInc/crewAI/pull/8849) | Uncaught `JSONDecodeError` crash replaying Anthropic/Bedrock conversations — fixes [#8847](https://github.com/crewAIInc/crewAI/issues/8847) | Open · CI green · in review |
 
-All three bugs were found by code inspection (the issues are mine too), with security review from the project's bot reporting no findings.
+All three bugs were found by code inspection (the issues are mine too), with security review from the project's bot reporting no findings. Both atomic-write and plain-text fixes were re-validated against the project's monorepo refactor (they remain needed on the new `state/provider` paths).
 
 ### fastmcp — MCP server framework
 
@@ -54,6 +54,7 @@ All three bugs were found by code inspection (the issues are mine too), with sec
 | [#6187 — support non-identifier variables in URI templates](https://github.com/PrefectHQ/fastmcp/pull/6187) | `{$top}`-style template variables never matched or forwarded | Open · in review after triage fixes |
 | [#6188 — keep result hydration faithful for union coercions](https://github.com/PrefectHQ/fastmcp/pull/6188) | `0 → False`-style coercions silently replaced typed results | Open · in review after triage fixes |
 | [#6189 — normalize CR/CRLF in generate-cli descriptions](https://github.com/PrefectHQ/fastmcp/pull/6189) | Windows line endings produced `SyntaxError` in generated CLIs | Open · awaiting maintainer issue assignment |
+| [#6214 — apply tool transforms before tag filters on single servers](https://github.com/PrefectHQ/fastmcp/pull/6214) | Tags added by a server's `tools` config were invisible to `include_tags`/`exclude_tags` on single-server MCPConfigs — fixes [#6196](https://github.com/PrefectHQ/fastmcp/issues/6196) | Open · triage bot found no defects, verified fail→pass |
 
 1,400+ existing tests pass on each; the triage-reviewer bot's findings on two of these were fixed the same day.
 
@@ -75,6 +76,7 @@ All DCO-signed from fresh upstream branches; live previews deployed by the proje
 |---|---|---|
 | [#7795 — close owned pgvector connection pools on `Memory.close()`](https://github.com/mem0ai/mem0/pull/7795) | Connection-pool leak; also fixed `__del__` closing caller-supplied pools — fixes [#7771](https://github.com/mem0ai/mem0/issues/7771) | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
 | [#7797 — apply every operator on multi-operator Qdrant filters (TS SDK)](https://github.com/mem0ai/mem0/pull/7797) | `ne`/`nin` merged into one clause; `AND` branches overwrote each other — fixes [#7762](https://github.com/mem0ai/mem0/issues/7762) | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
+| [#7808 — honor explicitly configured default user_id in the Hermes plugin](https://github.com/mem0ai/mem0/pull/7808) | Placeholder-collapse made an explicitly chosen default pool unreachable; gateway-native ids stranded memories — fixes [#7799](https://github.com/mem0ai/mem0/issues/7799) | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
 
 mem0's flow requires the linked issue to carry an `accepted` label before PRs are reviewed — both fixes and their tests are complete and waiting on that triage.
 
@@ -91,6 +93,7 @@ Second phase: two more projects, found by verifying merge culture live (do exter
 | [#7701 — keep literal `reflex.Var` tag text from hanging or corrupting string vars](https://github.com/reflex-dev/reflex/pull/7701) | Any string prop containing literal `<reflex.Var>…</reflex.Var>` text hung the compiler in an infinite loop, crashed with `KeyError`/`IndexError`, or silently lost the text in rendered output | Open · passed two rounds of automated review · awaiting human review |
 | [#7703 — `rx.asset(shared=True)` crash on Windows without Developer Mode](https://github.com/reflex-dev/reflex/pull/7703) | Symlink creation denied → whole app failed to compile; fix falls back to hardlink, then to a writable copy, keeping later compiles replaceable | Open · passed three rounds of automated review · awaiting human review |
 | [#7704 — `ln()` creates the link at dest pointing to src](https://github.com/reflex-dev/reflex/pull/7704) | The public path helper did the exact opposite of `ln -s` semantics, and `overwrite=True` never worked for files | Open · passed three rounds of automated review · awaiting human review |
+| [#7707 — drop the f-string Var marker from array ref names](https://github.com/reflex-dev/reflex/pull/7707) | The array ref formatter folded a per-run hash into compiled ref names, defeating reproducible builds — follow-up to #7691 | Open · awaiting review |
 
 The #7701 review process in numbers: 5 findings from two independent AI reviewers, all confirmed real and fixed with regression tests the same day — including a quadratic-rescan trap my first fix introduced, which the reviewers caught and the final fix eliminated (measured linear: 80k pathological inputs in ~20 ms).
 
@@ -105,6 +108,7 @@ The #7701 review process in numbers: 5 findings from two independent AI reviewer
 | [#787 — `Tool.model_dump()` leaks the `defs` field name instead of `$defs`](https://github.com/ollama/ollama-python/issues/787) | Verified serialization asymmetry between direct dumps and request-path dumps; two fix options documented for maintainers | Awaiting maintainer decision — PR offered |
 | [#11414 — `LinearTools.update_issue` rejects its own documented call](https://github.com/agno-agi/agno/issues/11414) | GraphQL `$title: String!` non-null variable bound to `None` — the documented "title unchanged" call always fails; state updates advertised but impossible | Under triage — fix + 6 tests ready on a branch |
 | [#11415 — `custom_scrape_website` returns field names instead of scraped data](https://github.com/agno-agi/agno/issues/11415) | Dict-key iteration returned the query's schema instead of the page content; also repaired the module's broken test fixtures and revived a maintainer-skipped test | Under triage — fix + tests ready on a branch |
+| [#11421 — toolkit HTTP calls without a timeout can hang the agent thread](https://github.com/agno-agi/agno/issues/11421) | 8 `requests` call sites across 4 toolkits (Bright Data, ModelsLab, Linear, Serply) wait forever on a degraded upstream | Under triage — mechanical sweep PR offered once `ready` |
 
 agno's flow requires the issue to be labeled `ready` before PRs are reviewed — both fixes are complete and the pull requests open the moment triage lands.
 
@@ -115,6 +119,8 @@ agno's flow requires the issue to be labeled `ready` before PRs are reviewed —
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#784 — skip blank lines in streaming NDJSON responses](https://github.com/ollama/ollama-python/pull/784) | A blank line anywhere in a streamed body (proxies, compatible servers re-chunking responses) crashed `generate(stream=True)` / `chat(stream=True)` with a raw `JSONDecodeError` | Open · awaiting review |
+| [#785 — union tool parameter types serialize as a JSON Schema type array](https://github.com/ollama/ollama-python/pull/785) | Union parameter types produced an invalid comma-joined `type` (`"string, integer"`), nondeterministically ordered | Open · awaiting review |
+| [#786 — `Message.get` aligned with `__contains__` semantics](https://github.com/ollama/ollama-python/pull/786) | Declared-but-unset fields returned `None` instead of the caller's default, and non-field names leaked through `.get()` | Open · awaiting review |
 | [#785 — union tool parameter types serialize as a JSON Schema type array](https://github.com/ollama/ollama-python/pull/785) | Union parameter types produced an invalid comma-joined `type` (`"string, integer"`), nondeterministically ordered | Open · awaiting review |
 | [#786 — `Message.get` aligned with `__contains__` semantics](https://github.com/ollama/ollama-python/pull/786) | Declared-but-unset fields returned `None` instead of the caller's default, and non-field names leaked through `.get()` | Open · awaiting review |
 
