@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 18 open pull requests across 5 projects · 6 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 19 open pull requests across 6 projects · 6 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -80,7 +80,7 @@ mem0's flow requires the linked issue to carry an `accepted` label before PRs ar
 
 ---
 
-## Phase 2 — New projects: reflex & agno
+## Phase 2 — New projects: reflex, agno & ollama-python
 
 Second phase: two more projects, found by verifying merge culture live (do external contributors actually get PRs merged?), then finding bugs by code inspection.
 
@@ -109,11 +109,21 @@ agno's flow requires the issue to be labeled `ready` before PRs are reviewed —
 
 ---
 
+### ollama-python — official Ollama client
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#784 — skip blank lines in streaming NDJSON responses](https://github.com/ollama/ollama-python/pull/784) | A blank line anywhere in a streamed body (proxies, compatible servers re-chunking responses) crashed `generate(stream=True)` / `chat(stream=True)` with a raw `JSONDecodeError` | Open · awaiting review |
+
+Found by code inspection of the streaming paths and reproduced with a blank-line-padded response; regression tests cover both the sync and async clients over a real local HTTP server.
+
+---
+
 ## What's next
 
 - Land the three reflex pull requests through human review — all are bot-clean with zero unresolved threads.
 - Open the two agno pull requests as soon as their issues are triaged.
-- Track mem0/crewAI/fastmcp/layer5 PRs to merge and update statuses here.
+- Track mem0/crewAI/fastmcp/layer5/ollama-python PRs to merge and update statuses here.
 - Keep the loop going: new projects entered only after verifying their merge culture live, new bugs found by reading code, every fix carrying a failing-first regression test.
 
 ---
