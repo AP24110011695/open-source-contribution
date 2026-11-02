@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 24 open pull requests across 7 projects · 9 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 25 pull requests across 7 projects — 22 under review, 3 gated on mem0 triage — · 8 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -74,12 +74,11 @@ All DCO-signed from fresh upstream branches; live previews deployed by the proje
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#7795 — close owned pgvector connection pools on `Memory.close()`](https://github.com/mem0ai/mem0/pull/7795) | Connection-pool leak; also fixed `__del__` closing caller-supplied pools — fixes [#7771](https://github.com/mem0ai/mem0/issues/7771) | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
+| [#7795 — close owned pgvector connection pools on `Memory.close()`](https://github.com/mem0ai/mem0/pull/7795) | Long-running hosts ran out of Postgres connections; now self-contained: `PGVector.close()` + ownership tracking + the `Memory.close()` wiring + a live-server regression test — fixes [#7771](https://github.com/mem0ai/mem0/issues/7771). Verified in production by the issue reporter | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
 | [#7797 — apply every operator on multi-operator Qdrant filters (TS SDK)](https://github.com/mem0ai/mem0/pull/7797) | `ne`/`nin` merged into one clause; `AND` branches overwrote each other — fixes [#7762](https://github.com/mem0ai/mem0/issues/7762) | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
 | [#7808 — honor explicitly configured default user_id in the Hermes plugin](https://github.com/mem0ai/mem0/pull/7808) | Placeholder-collapse made an explicitly chosen default pool unreachable; gateway-native ids stranded memories — fixes [#7799](https://github.com/mem0ai/mem0/issues/7799) | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
-| [#7795 — close owned pgvector connection pools on Memory.close()](https://github.com/mem0ai/mem0/pull/7795) | Long-running hosts ran out of Postgres connections; now self-contained: `PGVector.close()` + ownership tracking + the `Memory.close()` wiring + a live-server regression test — fixes [#7771](https://github.com/mem0ai/mem0/issues/7771). Verified in production by the issue reporter | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
 
-mem0's flow requires the linked issue to carry an `accepted` label before PRs are reviewed — both fixes and their tests are complete and waiting on that triage.
+mem0's flow requires the linked issue to carry an `accepted` label before PRs are reviewed — all three fixes and their tests are complete and waiting on that triage. #7795 has also been verified against the reporter's live production gateway.
 
 ---
 
@@ -106,12 +105,11 @@ The #7701 review process in numbers: 5 findings from two independent AI reviewer
 
 | Bug report | What it documents | Status |
 |---|---|---|
-| [#787 — `Tool.model_dump()` leaks the `defs` field name instead of `$defs`](https://github.com/ollama/ollama-python/issues/787) | Verified serialization asymmetry between direct dumps and request-path dumps; two fix options documented for maintainers | Awaiting maintainer decision — PR offered |
 | [#11414 — `LinearTools.update_issue` rejects its own documented call](https://github.com/agno-agi/agno/issues/11414) | GraphQL `$title: String!` non-null variable bound to `None` — the documented "title unchanged" call always fails; state updates advertised but impossible | Under triage — fix + 6 tests ready on a branch |
 | [#11415 — `custom_scrape_website` returns field names instead of scraped data](https://github.com/agno-agi/agno/issues/11415) | Dict-key iteration returned the query's schema instead of the page content; also repaired the module's broken test fixtures and revived a maintainer-skipped test | Under triage — fix + tests ready on a branch |
 | [#11421 — toolkit HTTP calls without a timeout can hang the agent thread](https://github.com/agno-agi/agno/issues/11421) | 8 `requests` call sites across 4 toolkits (Bright Data, ModelsLab, Linear, Serply) wait forever on a degraded upstream | Under triage — mechanical sweep PR offered once `ready` |
 
-agno's flow requires the issue to be labeled `ready` before PRs are reviewed — both fixes are complete and the pull requests open the moment triage lands.
+agno's flow requires the issue to be labeled `ready` before PRs are reviewed — the fixes are complete and the pull requests open the moment triage lands.
 
 ---
 
@@ -122,16 +120,19 @@ agno's flow requires the issue to be labeled `ready` before PRs are reviewed —
 | [#784 — skip blank lines in streaming NDJSON responses](https://github.com/ollama/ollama-python/pull/784) | A blank line anywhere in a streamed body (proxies, compatible servers re-chunking responses) crashed `generate(stream=True)` / `chat(stream=True)` with a raw `JSONDecodeError` | Open · awaiting review |
 | [#785 — union tool parameter types serialize as a JSON Schema type array](https://github.com/ollama/ollama-python/pull/785) | Union parameter types produced an invalid comma-joined `type` (`"string, integer"`), nondeterministically ordered | Open · awaiting review |
 | [#786 — `Message.get` aligned with `__contains__` semantics](https://github.com/ollama/ollama-python/pull/786) | Declared-but-unset fields returned `None` instead of the caller's default, and non-field names leaked through `.get()` | Open · awaiting review |
-| [#785 — union tool parameter types serialize as a JSON Schema type array](https://github.com/ollama/ollama-python/pull/785) | Union parameter types produced an invalid comma-joined `type` (`"string, integer"`), nondeterministically ordered | Open · awaiting review |
-| [#786 — `Message.get` aligned with `__contains__` semantics](https://github.com/ollama/ollama-python/pull/786) | Declared-but-unset fields returned `None` instead of the caller's default, and non-field names leaked through `.get()` | Open · awaiting review |
+| [#788 — `ResponseError` survives non-object JSON error bodies](https://github.com/ollama/ollama-python/pull/788) | A gateway/proxy error body of `null`, `[]`, or a bare JSON string crashed error construction with `AttributeError`, masking the real HTTP failure | Open · awaiting review |
 
-Found by code inspection of the streaming paths and reproduced with a blank-line-padded response; regression tests cover both the sync and async clients over a real local HTTP server.
+Found by code inspection of the streaming and error paths and reproduced over a real local HTTP server; regression tests cover both the sync and async clients.
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#787 — `Tool.model_dump()` leaks the `defs` field name instead of `$defs`](https://github.com/ollama/ollama-python/issues/787) | Verified serialization asymmetry between direct dumps and request-path dumps; two fix options documented for maintainers | Awaiting maintainer decision — PR offered |
 
 ---
 
 ## What's next
 
-- Land the three reflex pull requests through human review — all are bot-clean with zero unresolved threads.
+- Land the four reflex pull requests through human review — all are bot-clean with zero unresolved threads.
 - Open the two agno pull requests as soon as their issues are triaged.
 - Track mem0/crewAI/fastmcp/layer5/ollama-python PRs to merge and update statuses here.
 - Keep the loop going: new projects entered only after verifying their merge culture live, new bugs found by reading code, every fix carrying a failing-first regression test.
