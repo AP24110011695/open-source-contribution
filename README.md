@@ -51,12 +51,12 @@ All three bugs were found by code inspection (the issues are mine too), with sec
 |---|---|---|
 | [#6180 — decode RFC 6901 escapes when extracting `$defs` names](https://github.com/PrefectHQ/fastmcp/pull/6180) | JSON-pointer-escaped schema names broke schema extraction — fixes [#6034](https://github.com/PrefectHQ/fastmcp/issues/6034) | Open · awaiting maintainer issue assignment |
 | [#6185 — keep `tools/list` working when a root `$ref` resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185) | Whole-server tools listing crashed on valid schemas — fixes [#6125](https://github.com/PrefectHQ/fastmcp/issues/6125) | Open · awaiting maintainer issue assignment |
-| [#6187 — support non-identifier variables in URI templates](https://github.com/PrefectHQ/fastmcp/pull/6187) | `{$top}`-style template variables never matched or forwarded | Open · in review after triage fixes |
-| [#6188 — keep result hydration faithful for union coercions](https://github.com/PrefectHQ/fastmcp/pull/6188) | `0 → False`-style coercions silently replaced typed results | Open · in review after triage fixes |
+| [#6187 — support non-identifier variables in URI templates](https://github.com/PrefectHQ/fastmcp/pull/6187) | `{$top}`-style template variables never matched or forwarded; Unicode word characters that identifiers reject also disabled templates | Open · two bot-review rounds, findings fixed same day · awaiting maintainer issue assignment |
+| [#6188 — keep result hydration faithful for union coercions](https://github.com/PrefectHQ/fastmcp/pull/6188) | `0 → False`-style coercions silently replaced typed results; final guard also preserves schema-intended `format: json` decodes and rejects precision-losing timestamp truncation | Open · two bot-review rounds, findings fixed same day · awaiting maintainer issue assignment |
 | [#6189 — normalize CR/CRLF in generate-cli descriptions](https://github.com/PrefectHQ/fastmcp/pull/6189) | Windows line endings produced `SyntaxError` in generated CLIs | Open · awaiting maintainer issue assignment |
 | [#6214 — apply tool transforms before tag filters on single servers](https://github.com/PrefectHQ/fastmcp/pull/6214) | Tags added by a server's `tools` config were invisible to `include_tags`/`exclude_tags` on single-server MCPConfigs — fixes [#6196](https://github.com/PrefectHQ/fastmcp/issues/6196) | Open · triage bot found no defects, verified fail→pass |
 
-1,400+ existing tests pass on each; the triage-reviewer bot's findings on two of these were fixed the same day.
+1,400+ existing tests pass on each; every automated-review finding across these PRs (triage-reviewer and codex rounds) was confirmed real and fixed the same day, with the fixes re-verified against each reviewer's own fail→pass standard.
 
 ### layer5 — cloud-native UI
 
