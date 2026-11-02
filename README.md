@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 25 pull requests across 7 projects — 22 under review, 3 gated on mem0 triage — · 8 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 25 pull requests across 8 projects — 22 under review, 3 gated on mem0 triage — · 9 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -127,6 +127,12 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 | Bug report | What it documents | Status |
 |---|---|---|
 | [#787 — `Tool.model_dump()` leaks the `defs` field name instead of `$defs`](https://github.com/ollama/ollama-python/issues/787) | Verified serialization asymmetry between direct dumps and request-path dumps; two fix options documented for maintainers | Awaiting maintainer decision — PR offered |
+
+### Powertools for AWS Lambda (Python) — AWS Lambda utility library
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#8747 — malformed `POWERTOOLS_PARAMETERS_MAX_AGE` crashes every parameters call](https://github.com/aws-powertools/powertools-lambda-python/issues/8747) | An empty or non-integer cache-TTL environment variable raised a raw `ValueError` from all 12 Parameters/Secrets/AppConfig entry points before any AWS call — verified by running the repro on `develop` | Under triage — fix + failing-first regression test staged on a branch; PR opens when the issue is assigned (project's claim-first flow) |
 
 ---
 
