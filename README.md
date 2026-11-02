@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 25 pull requests across 8 projects — 22 under review, 3 gated on mem0 triage — · 9 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 24 pull requests across 7 projects — 21 under review, 3 gated on mem0 triage — · 9 bug reports filed across 8 projects · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -53,7 +53,6 @@ All three bugs were found by code inspection (the issues are mine too), with sec
 | [#6185 — keep `tools/list` working when a root `$ref` resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185) | Whole-server tools listing crashed on valid schemas — fixes [#6125](https://github.com/PrefectHQ/fastmcp/issues/6125) | Open · awaiting maintainer issue assignment |
 | [#6187 — support non-identifier variables in URI templates](https://github.com/PrefectHQ/fastmcp/pull/6187) | `{$top}`-style template variables never matched or forwarded; Unicode word characters that identifiers reject also disabled templates | Open · two bot-review rounds, findings fixed same day · awaiting maintainer issue assignment |
 | [#6188 — keep result hydration faithful for union coercions](https://github.com/PrefectHQ/fastmcp/pull/6188) | `0 → False`-style coercions silently replaced typed results; final guard also preserves schema-intended `format: json` decodes and rejects precision-losing timestamp truncation | Open · two bot-review rounds, findings fixed same day · awaiting maintainer issue assignment |
-| [#6189 — normalize CR/CRLF in generate-cli descriptions](https://github.com/PrefectHQ/fastmcp/pull/6189) | Windows line endings produced `SyntaxError` in generated CLIs | Open · awaiting maintainer issue assignment |
 | [#6214 — apply tool transforms before tag filters on single servers](https://github.com/PrefectHQ/fastmcp/pull/6214) | Tags added by a server's `tools` config were invisible to `include_tags`/`exclude_tags` on single-server MCPConfigs — fixes [#6196](https://github.com/PrefectHQ/fastmcp/issues/6196) | Open · triage bot found no defects, verified fail→pass |
 
 1,400+ existing tests pass on each; every automated-review finding across these PRs (triage-reviewer and codex rounds) was confirmed real and fixed the same day, with the fixes re-verified against each reviewer's own fail→pass standard.
