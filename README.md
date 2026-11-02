@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 25 pull requests across 8 projects — 22 under review, 3 gated on mem0 triage — · 9 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 26 pull requests across 9 projects — 23 under review, 3 gated on mem0 triage — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -132,6 +132,12 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#8757 — ignore malformed `POWERTOOLS_PARAMETERS_MAX_AGE` instead of crashing](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) | An empty or non-integer cache-TTL environment variable raised a raw `ValueError` from all 12 Parameters/Secrets/AppConfig entry points before any AWS call; now warns and falls back to the documented default per the project's compatibility ADR | Open · bug confirmed and assigned by a maintainer within ~2.5h of the report · milestone 3.41.0 — fixes [#8747](https://github.com/aws-powertools/powertools-lambda-python/issues/8747) |
+
+### rai-toolkit (Weights & Biases) — responsible-AI evaluation toolkit
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error matching the CLI's established convention — fixes [#129](https://github.com/wandb/rai-toolkit/issues/129) | Open · failing-first tests · awaiting review |
 
 ---
 
