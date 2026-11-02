@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 26 pull requests across 9 projects — 23 under review, 3 gated on mem0 triage — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 28 pull requests across 10 projects — 1 merged, 24 under review, 3 gated on mem0 triage — · 12 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -28,6 +28,14 @@ Words from project reviewers:
 > "Excellent root-cause work."
 > "Clean, well-evidenced fix… looks ready once the build check finishes."
 > — [@rahmanaisha](https://github.com/rahmanaisha), layer5 maintainer, on five of the pull requests below
+
+---
+
+## Merged
+
+| Pull request | What it fixes | Project |
+|---|---|---|
+| [#677 — reject whitespace-only API key names](https://github.com/nikhilb2/simple_invoicing/pull/677) | `POST /api/api-keys/` saved a name of only spaces as an empty string; now returns 422 — merged within the hour of opening | simple_invoicing |
 
 ---
 
@@ -132,6 +140,13 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#8757 — ignore malformed `POWERTOOLS_PARAMETERS_MAX_AGE` instead of crashing](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) | An empty or non-integer cache-TTL environment variable raised a raw `ValueError` from all 12 Parameters/Secrets/AppConfig entry points before any AWS call; now warns and falls back to the documented default per the project's compatibility ADR | Open · bug confirmed and assigned by a maintainer within ~2.5h of the report · milestone 3.41.0 — fixes [#8747](https://github.com/aws-powertools/powertools-lambda-python/issues/8747) |
+
+### Actual Budget — personal finance app
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#9416 — reject amounts too large for safe arithmetic on import](https://github.com/actualbudget/actual/pull/9416) | Importing a CSV whose amount overflows the safe-integer range crashed the transaction list on render; the import preview now rejects such rows like other unparseable fields — fixes [#9415](https://github.com/actualbudget/actual/issues/9415) | Open · 118 tests passing · in review |
+| [#9419 — return focus to the input after picking a calendar day](https://github.com/actualbudget/actual/pull/9419) | Picking a date in the calendar dropped keyboard focus, forcing mouse-only transaction entry — fixes [#9370](https://github.com/actualbudget/actual/issues/9370) | Open · in review |
 
 ### rai-toolkit (Weights & Biases) — responsible-AI evaluation toolkit
 
