@@ -146,7 +146,7 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#9416 — reject amounts too large for safe arithmetic on import](https://github.com/actualbudget/actual/pull/9416) | Importing a CSV whose amount overflows the safe-integer range crashed the transaction list on render; the import preview now rejects such rows like other unparseable fields — fixes [#9415](https://github.com/actualbudget/actual/issues/9415) | Open · 118 tests passing · in review |
+| [#9416 — reject amounts too large for safe arithmetic on import](https://github.com/actualbudget/actual/pull/9416) | Importing a CSV whose amount overflows the safe-integer range crashed the transaction list on render; the import preview now rejects such rows like other unparseable fields — fixes [#9415](https://github.com/actualbudget/actual/issues/9415) | Open · all CI green · every review thread resolved · in review |
 | [#9419 — return focus to the input after picking a calendar day](https://github.com/actualbudget/actual/pull/9419) | Picking a date in the calendar dropped keyboard focus, forcing mouse-only transaction entry — fixes [#9370](https://github.com/actualbudget/actual/issues/9370) | Open · in review |
 
 ### rai-toolkit (Weights & Biases) — responsible-AI evaluation toolkit
