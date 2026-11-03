@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 32 pull requests across 11 projects — 2 merged, 25 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 1 closed in favor of an assigned fix — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 33 pull requests across 11 projects — 2 merged, 26 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 1 closed in favor of an assigned fix — · 11 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -159,9 +159,10 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#3028 — TrainLogger takes run_id and results path instead of the global config](https://github.com/ecmwf/WeatherGenerator/pull/3028) | The training logger held the entire global config object but only ever read the run id from it — now it takes the two parameters it needs and can be used standalone — fixes the remaining scope of [#1213](https://github.com/ecmwf/WeatherGenerator/issues/1213) | Open · in review |
+| [#3028 — TrainLogger takes run_id and results path instead of the global config](https://github.com/ecmwf/WeatherGenerator/pull/3028) | The training logger held the entire global config object but only ever read the run id from it — now it takes the two parameters it needs and can be used standalone — fixes the remaining scope of [#1213](https://github.com/ecmwf/WeatherGenerator/issues/1213) | Open · CI green · in review |
+| [#3030 — fix legacy metrics lookup level](https://github.com/ecmwf/WeatherGenerator/pull/3030) | The metrics-file backwards-compatibility branch probed a path no released version ever wrote, so reading any pre-rename run crashed with `FileNotFoundError` instead of using the compat file — fixes [#3029](https://github.com/ecmwf/WeatherGenerator/issues/3029), a self-found bug traced through the #601/#1831 history | Open · CI green · in review |
 
-Found through the good-first-issue queue after verifying the merge culture live: the project's last 10 merged pull requests came from ~8 different outside contributors. Picked up the issue's remaining requirement after auditing all three against the current code (two were already satisfied by earlier refactors — documented in the PR) and added the logger's first regression test, proven failing on the old API.
+Found through the good-first-issue queue after verifying the merge culture live: the project's last 10 merged pull requests came from ~8 different outside contributors. Picked up #1213's remaining requirement after auditing all three against the current code (two were already satisfied by earlier refactors — documented in the PR) and added the logger's first regression test, proven failing on the old API. The second fix came from tracing the file-renaming history and reproducing the dead compatibility branch end-to-end before filing.
 
 ---
 
