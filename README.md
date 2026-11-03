@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 30 pull requests across 10 projects — 1 merged, 26 under review, 3 gated on mem0 triage — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 30 pull requests across 10 projects — 2 merged, 25 under review, 3 gated on mem0 triage — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -36,6 +36,7 @@ Words from project reviewers:
 | Pull request | What it fixes | Project |
 |---|---|---|
 | [#677 — reject whitespace-only API key names](https://github.com/nikhilb2/simple_invoicing/pull/677) | `POST /api/api-keys/` saved a name of only spaces as an empty string; now returns 422 — merged within the hour of opening | simple_invoicing |
+| [#678 — reject blank units and unknown statuses on product update](https://github.com/nikhilb2/simple_invoicing/pull/678) | Product updates silently accepted a blank unit and any status string; now reuses the create-path unit validation and bounds status to active/inactive with 422s — merged the same day, after addressing a maintainer change request with the requested API-level test | simple_invoicing |
 
 ---
 
