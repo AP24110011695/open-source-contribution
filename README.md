@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 30 pull requests across 10 projects — 2 merged, 25 under review, 3 gated on mem0 triage — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 30 pull requests across 10 projects — 2 merged, 24 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 1 closed in favor of an assigned fix — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -72,7 +72,7 @@ All three bugs were found by code inspection (the issues are mine too), with sec
 |---|---|---|
 | [#8277 — case-study banner fits its container on mobile](https://github.com/layer5io/layer5/pull/8277) | Logo/graphic overflowed on small viewports — fixes [#8272](https://github.com/layer5io/layer5/issues/8272) | Reviewed "no changes needed" · awaiting merge |
 | [#8278 — pricing cards reference real tier names](https://github.com/layer5io/layer5/pull/8278) | Bylines named tiers that don't exist ("Free", "Team") — fixes [#8258](https://github.com/layer5io/layer5/issues/8258) | Reviewed "no changes needed" · awaiting merge |
-| [#8279 — Sistent icons docs: valid imports, preview matches snippet](https://github.com/layer5io/layer5/pull/8279) | Docs snippet imported non-existent exports; preview didn't match the code — fixes [#8257](https://github.com/layer5io/layer5/issues/8257) | Reviewed "no changes needed" · awaiting merge |
+| [#8279 — Sistent icons docs: valid imports, preview matches snippet](https://github.com/layer5io/layer5/pull/8279) | Docs snippet imported non-existent exports; preview didn't match the code — fixes [#8257](https://github.com/layer5io/layer5/issues/8257) | Reviewed "no changes needed" · closed in favor of the maintainer-assigned [#8291](https://github.com/layer5io/layer5/pull/8291), which merged |
 | [#8280 — Heading 1 design token stays in viewport on mobile](https://github.com/layer5io/layer5/pull/8280) | 6rem default heading overflowed phones — fixes [#8267](https://github.com/layer5io/layer5/issues/8267) | Reviewed "no changes needed" · awaiting merge |
 | [#8281 — carousel arrows visible and clickable on mobile](https://github.com/layer5io/layer5/pull/8281) | Arrows flickered, clipped off-screen at ≤ 850px — fixes [#8275](https://github.com/layer5io/layer5/issues/8275) | Reviewed "no changes needed" · awaiting merge |
 
@@ -113,9 +113,9 @@ The #7701 review process in numbers: 5 findings from two independent AI reviewer
 
 | Bug report | What it documents | Status |
 |---|---|---|
-| [#11414 — `LinearTools.update_issue` rejects its own documented call](https://github.com/agno-agi/agno/issues/11414) | GraphQL `$title: String!` non-null variable bound to `None` — the documented "title unchanged" call always fails; state updates advertised but impossible | Under triage — fix + 6 tests ready on a branch |
-| [#11415 — `custom_scrape_website` returns field names instead of scraped data](https://github.com/agno-agi/agno/issues/11415) | Dict-key iteration returned the query's schema instead of the page content; also repaired the module's broken test fixtures and revived a maintainer-skipped test | Under triage — fix + tests ready on a branch |
-| [#11421 — toolkit HTTP calls without a timeout can hang the agent thread](https://github.com/agno-agi/agno/issues/11421) | 8 `requests` call sites across 4 toolkits (Bright Data, ModelsLab, Linear, Serply) wait forever on a degraded upstream | Under triage — mechanical sweep PR offered once `ready` |
+| [#11414 — `LinearTools.update_issue` rejects its own documented call](https://github.com/agno-agi/agno/issues/11414) | GraphQL `$title: String!` non-null variable bound to `None` — the documented "title unchanged" call always fails; state updates advertised but impossible | Reported · community contributor implementing; our fix + 6 tests staged |
+| [#11415 — `custom_scrape_website` returns field names instead of scraped data](https://github.com/agno-agi/agno/issues/11415) | Dict-key iteration returned the query's schema instead of the page content; also repaired the module's broken test fixtures and revived a maintainer-skipped test | Reported · community contributor implementing; our fix + tests staged |
+| [#11421 — toolkit HTTP calls without a timeout can hang the agent thread](https://github.com/agno-agi/agno/issues/11421) | `requests` call sites in 2 toolkits (ModelsLab, Linear) wait forever on a degraded upstream — scope corrected after a community fact-check confirmed Bright Data/Serply were already fixed | Reported · handed to a community contributor with the corrected scope |
 
 agno's flow requires the issue to be labeled `ready` before PRs are reviewed — the fixes are complete and the pull requests open the moment triage lands.
 
