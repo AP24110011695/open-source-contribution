@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 30 pull requests across 10 projects — 2 merged, 24 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 1 closed in favor of an assigned fix — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 32 pull requests across 11 projects — 2 merged, 25 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 1 closed in favor of an assigned fix — · 10 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -154,6 +154,14 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error matching the CLI's established convention — fixes [#129](https://github.com/wandb/rai-toolkit/issues/129) | Open · failing-first tests · awaiting review |
+
+### ECMWF WeatherGenerator — machine-learning weather forecasting model
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#3028 — TrainLogger takes run_id and results path instead of the global config](https://github.com/ecmwf/WeatherGenerator/pull/3028) | The training logger held the entire global config object but only ever read the run id from it — now it takes the two parameters it needs and can be used standalone — fixes the remaining scope of [#1213](https://github.com/ecmwf/WeatherGenerator/issues/1213) | Open · in review |
+
+Found through the good-first-issue queue after verifying the merge culture live: the project's last 10 merged pull requests came from ~8 different outside contributors. Picked up the issue's remaining requirement after auditing all three against the current code (two were already satisfied by earlier refactors — documented in the PR) and added the logger's first regression test, proven failing on the old API.
 
 ---
 
