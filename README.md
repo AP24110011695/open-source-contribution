@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 35 pull requests across 12 projects — 2 merged, 27 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · 12 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 36 pull requests across 13 projects — 2 merged, 28 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · 13 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -164,6 +164,12 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 | [#3032 — fix bare-path config entries in compare_run_configs](https://github.com/ecmwf/WeatherGenerator/pull/3032) | The config-comparison tool's bare-path format crashed with a doubled directory path ever since a config-loader fix changed `model_path` semantics — fixes [#3031](https://github.com/ecmwf/WeatherGenerator/issues/3031), self-found and reproduced end-to-end before filing | Open · in review |
 
 Found through the good-first-issue queue after verifying the merge culture live: the project's last 10 merged pull requests came from ~8 different outside contributors. Picked up #1213's remaining requirement after auditing all three against the current code (two were already satisfied by earlier refactors — documented in the PR) and added the logger's first regression test, proven failing on the old API. The two follow-up fixes came from tracing historical PRs that changed path semantics and reproducing the broken behavior end-to-end before filing — each with fail-first regression tests, including the config-comparison tool's first tests.
+
+### pypdf — pure-Python PDF toolkit
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#4353 — guard the remaining non-dictionary /Resources accesses](https://github.com/py-pdf/pypdf/pull/4353) | Two code paths (font listing and inline-image color-space lookup) still crashed with `TypeError` when `/Resources` was not a dictionary — the same robustness class fixed twice elsewhere in the codebase — fixes [#4352](https://github.com/py-pdf/pypdf/issues/4352), a self-found bug located by mining that repeated fix pattern | Open · in review |
 
 ### NiceGUI — Python UI framework
 
