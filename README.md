@@ -182,6 +182,12 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#4528 — recognize default-key ciphertext in `isCiphertext` under a custom key](https://github.com/apache/hertzbeat/pull/4528) | `isCiphertext` answered `false` for data encoded with the default secret key while a custom key was configured, while `aesDecode` decrypted the same payload via its default-key fallback — so callers deciding decrypt-vs-use-as-is treated real ciphertext as plaintext (three live call sites; a fourth already worked around it) — fixes [#4527](https://github.com/apache/hertzbeat/issues/4527), self-found by mining the project's fresh credential-hardening fixes for siblings | 🟢 Open · in review |
 
+## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache OpenDAL (data access layer)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#8484 — trim whitespace in `normalize_root`](https://github.com/apache/opendal/pull/8484) | `normalize_root`'s own documented rules say whitespace is trimmed (identical wording to `normalize_path`, which trims and is pinned-tested), but the code never did — a root configured as `" my-dir "` became `"/ my-dir /"` and every object path under the backend silently carried the spaces | 🟢 Open · in review |
+
 ---
 
 *This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
