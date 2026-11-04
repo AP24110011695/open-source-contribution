@@ -1,33 +1,17 @@
 # Open Source Contributions — Ayush (AP24110011695)
 
-One link with everything I ship to open source. Every pull request, bug report and fix below is real, linked, and verifiable — no screenshots-only portfolio.
-
-**About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools, data-infrastructure and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
-
-**Snapshot:** 40 pull requests and 14 bug reports across 16 projects (14 pre-Apache + apache/iceberg-python + apache/airflow) — 3 merged, 31 pull requests under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+All of my open source work in one place — every pull request, bug report and fix below is real and linked.
 
 ---
 
 ## How I work
 
-- **Failing regression test first** — prove the bug on the project's own `main`, then show the same test passing with the fix.
-- **Read the contribution rules before committing** — DCO sign-offs, PR templates, issue gates; nothing opened that violates a project's flow.
-- **Every PR links its issue** (`Fixes #…`), states the root cause, and documents which tests fail on `main`.
-- **Reviewer feedback is fixed the same session**, with a short "addressed in `<sha>`" reply on the thread.
-- **External services are mocked in tests — never the code under test.**
-
-### Review track record
-
-Across every review round AI reviewers and maintainers have left on these pull requests (multiple bots on several projects, plus human maintainer reviews): **every confirmed finding was fixed the same session with regression tests, one became a tracked design question for maintainers, and nothing remained unresolved.** Where a reviewer's finding was withdrawn after re-verification, that exchange is public on the pull request. Zero findings survived a second review.
-
-Words from project reviewers:
-
-> "This is exactly the fix the docs needed. … No changes needed."
-> "Nice catch, and a clean fix."
-> "Clean, well-diagnosed fix… exactly right."
-> "Excellent root-cause work."
-> "Clean, well-evidenced fix… looks ready once the build check finishes."
-> — [@rahmanaisha](https://github.com/rahmanaisha), layer5 maintainer, on five of the pull requests below
+- I find most bugs myself by reading the code — the issues behind them are mine too, not ones I picked off a shelf.
+- Every fix starts with a small failing test on the project's own `main`, to prove the bug is real. Then the fix, and the same test passing.
+- I read each project's contribution rules before opening anything — sign-offs, issue gates, PR templates — so nothing I send breaks their flow.
+- Every pull request explains the root cause and links the issue it fixes.
+- When a reviewer leaves feedback, I fix it the same day and reply with the commit that addresses it.
+- Tests mock real external services — never the code under test.
 
 ---
 
@@ -41,11 +25,7 @@ Words from project reviewers:
 
 ---
 
-## Phase 1 — First contributions across four projects
-
-The plan: learn four different contribution cultures end to end — an AI agent framework, an MCP server framework, a cloud-native UI project, and an agent-memory library.
-
-### crewAI — AI agent framework
+## crewAI
 
 | Pull request | What it fixes | Status |
 |---|---|---|
@@ -53,9 +33,7 @@ The plan: learn four different contribution cultures end to end — an AI agent 
 | [#8848 — publish JSON checkpoints atomically](https://github.com/crewAIInc/crewAI/pull/8848) | Interrupted writes left truncated/corrupt checkpoint files — fixes [#8846](https://github.com/crewAIInc/crewAI/issues/8846) | Open · CI green · in review |
 | [#8849 — tolerate malformed tool-call arguments in history replay](https://github.com/crewAIInc/crewAI/pull/8849) | Uncaught `JSONDecodeError` crash replaying Anthropic/Bedrock conversations — fixes [#8847](https://github.com/crewAIInc/crewAI/issues/8847) | Open · CI green · in review |
 
-All three bugs were found by code inspection (the issues are mine too), with security review from the project's bot reporting no findings. Both atomic-write and plain-text fixes were re-validated against the project's monorepo refactor (they remain needed on the new `state/provider` paths).
-
-### fastmcp — MCP server framework
+## fastmcp
 
 | Pull request | What it fixes | Status |
 |---|---|---|
@@ -65,9 +43,7 @@ All three bugs were found by code inspection (the issues are mine too), with sec
 | [#6188 — keep result hydration faithful for union coercions](https://github.com/PrefectHQ/fastmcp/pull/6188) | `0 → False`-style coercions silently replaced typed results; final guard also preserves schema-intended `format: json` decodes and rejects precision-losing timestamp truncation | Open · two bot-review rounds, findings fixed same day · awaiting maintainer issue assignment |
 | [#6214 — apply tool transforms before tag filters on single servers](https://github.com/PrefectHQ/fastmcp/pull/6214) | Tags added by a server's `tools` config were invisible to `include_tags`/`exclude_tags` on single-server MCPConfigs — fixes [#6196](https://github.com/PrefectHQ/fastmcp/issues/6196) | Open · triage bot found no defects, verified fail→pass |
 
-1,400+ existing tests pass on each; every automated-review finding across these PRs (triage-reviewer and codex rounds) was confirmed real and fixed the same day, with the fixes re-verified against each reviewer's own fail→pass standard.
-
-### layer5 — cloud-native UI
+## layer5
 
 | Pull request | What it fixes | Status |
 |---|---|---|
@@ -77,9 +53,7 @@ All three bugs were found by code inspection (the issues are mine too), with sec
 | [#8280 — Heading 1 design token stays in viewport on mobile](https://github.com/layer5io/layer5/pull/8280) | 6rem default heading overflowed phones — fixes [#8267](https://github.com/layer5io/layer5/issues/8267) | Reviewed "no changes needed" · awaiting merge |
 | [#8281 — carousel arrows visible and clickable on mobile](https://github.com/layer5io/layer5/pull/8281) | Arrows flickered, clipped off-screen at ≤ 850px — fixes [#8275](https://github.com/layer5io/layer5/issues/8275) | Reviewed "no changes needed" · awaiting merge |
 
-All DCO-signed from fresh upstream branches; live previews deployed by the project's CI.
-
-### mem0 — agent memory library
+## mem0
 
 | Pull request | What it fixes | Status |
 |---|---|---|
@@ -87,15 +61,7 @@ All DCO-signed from fresh upstream branches; live previews deployed by the proje
 | [#7797 — apply every operator on multi-operator Qdrant filters (TS SDK)](https://github.com/mem0ai/mem0/pull/7797) | `ne`/`nin` merged into one clause; `AND` branches overwrote each other — fixes [#7762](https://github.com/mem0ai/mem0/issues/7762) | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
 | [#7808 — honor explicitly configured default user_id in the Hermes plugin](https://github.com/mem0ai/mem0/pull/7808) | Placeholder-collapse made an explicitly chosen default pool unreachable; gateway-native ids stranded memories — fixes [#7799](https://github.com/mem0ai/mem0/issues/7799) | Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
 
-mem0's flow requires the linked issue to carry an `accepted` label before PRs are reviewed — all three fixes and their tests are complete and waiting on that triage. #7795 has also been verified against the reporter's live production gateway.
-
----
-
-## Phase 2 — New projects: reflex, agno & ollama-python
-
-Second phase: two more projects, found by verifying merge culture live (do external contributors actually get PRs merged?), then finding bugs by code inspection.
-
-### reflex — Python web framework compiling to React
+## reflex
 
 | Pull request | What it fixes | Status |
 |---|---|---|
@@ -104,13 +70,11 @@ Second phase: two more projects, found by verifying merge culture live (do exter
 | [#7704 — `ln()` creates the link at dest pointing to src](https://github.com/reflex-dev/reflex/pull/7704) | The public path helper did the exact opposite of `ln -s` semantics, and `overwrite=True` never worked for files | Open · passed three rounds of automated review · awaiting human review |
 | [#7707 — drop the f-string Var marker from array ref names](https://github.com/reflex-dev/reflex/pull/7707) | The array ref formatter folded a per-run hash into compiled ref names, defeating reproducible builds — follow-up to #7691 | Open · awaiting review |
 
-The #7701 review process in numbers: 5 findings from two independent AI reviewers, all confirmed real and fixed with regression tests the same day — including a quadratic-rescan trap my first fix introduced, which the reviewers caught and the final fix eliminated (measured linear: 80k pathological inputs in ~20 ms).
-
 | Bug report | What it documents | Status |
 |---|---|---|
 | [#7705 — hardlink/copy fallback assets aren't cleaned up when sources vanish](https://github.com/reflex-dev/reflex/issues/7705) | Design question with three solution options; tracked in the project's internal backlog (ENG-13670) | Awaiting maintainer decision |
 
-### agno — agent framework
+## agno
 
 | Bug report | What it documents | Status |
 |---|---|---|
@@ -118,11 +82,7 @@ The #7701 review process in numbers: 5 findings from two independent AI reviewer
 | [#11415 — `custom_scrape_website` returns field names instead of scraped data](https://github.com/agno-agi/agno/issues/11415) | Dict-key iteration returned the query's schema instead of the page content; also repaired the module's broken test fixtures and revived a maintainer-skipped test | Reported · community contributor implementing; our fix + tests staged |
 | [#11421 — toolkit HTTP calls without a timeout can hang the agent thread](https://github.com/agno-agi/agno/issues/11421) | `requests` call sites in 2 toolkits (ModelsLab, Linear) wait forever on a degraded upstream — scope corrected after a community fact-check confirmed Bright Data/Serply were already fixed | Reported · handed to a community contributor with the corrected scope |
 
-agno's flow requires the issue to be labeled `ready` before PRs are reviewed — the fixes are complete and the pull requests open the moment triage lands.
-
----
-
-### ollama-python — official Ollama client
+## ollama-python
 
 | Pull request | What it fixes | Status |
 |---|---|---|
@@ -131,32 +91,24 @@ agno's flow requires the issue to be labeled `ready` before PRs are reviewed —
 | [#786 — `Message.get` aligned with `__contains__` semantics](https://github.com/ollama/ollama-python/pull/786) | Declared-but-unset fields returned `None` instead of the caller's default, and non-field names leaked through `.get()` | Open · awaiting review |
 | [#788 — `ResponseError` survives non-object JSON error bodies](https://github.com/ollama/ollama-python/pull/788) | A gateway/proxy error body of `null`, `[]`, or a bare JSON string crashed error construction with `AttributeError`, masking the real HTTP failure | Open · awaiting review |
 
-Found by code inspection of the streaming and error paths and reproduced over a real local HTTP server; regression tests cover both the sync and async clients.
-
 | Bug report | What it documents | Status |
 |---|---|---|
 | [#787 — `Tool.model_dump()` leaks the `defs` field name instead of `$defs`](https://github.com/ollama/ollama-python/issues/787) | Verified serialization asymmetry between direct dumps and request-path dumps; two fix options documented for maintainers | Awaiting maintainer decision — PR offered |
 
-### Powertools for AWS Lambda (Python) — AWS Lambda utility library
+## Powertools for AWS Lambda (Python)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#8757 — ignore malformed `POWERTOOLS_PARAMETERS_MAX_AGE` instead of crashing](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) | An empty or non-integer cache-TTL environment variable raised a raw `ValueError` from all 12 Parameters/Secrets/AppConfig entry points before any AWS call; now warns and falls back to the documented default per the project's compatibility ADR | Open · bug confirmed and assigned by a maintainer within ~2.5h of the report · milestone 3.41.0 — fixes [#8747](https://github.com/aws-powertools/powertools-lambda-python/issues/8747) |
 
-### Actual Budget — personal finance app
+## Actual Budget
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#9416 — reject amounts too large for safe arithmetic on import](https://github.com/actualbudget/actual/pull/9416) | Importing a CSV whose amount overflows the safe-integer range crashed the transaction list on render; the import preview now rejects such rows like other unparseable fields — fixes [#9415](https://github.com/actualbudget/actual/issues/9415) | Open · all CI green · every review thread resolved · in review |
 | [#9419 — return focus to the input after picking a calendar day](https://github.com/actualbudget/actual/pull/9419) | Picking a date in the calendar dropped keyboard focus, forcing mouse-only transaction entry — fixes [#9370](https://github.com/actualbudget/actual/issues/9370) | Open · in review |
 
-### rai-toolkit (Weights & Biases) — responsible-AI evaluation toolkit
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error matching the CLI's established convention, while a valid model's own factory or constructor failures keep their original exception and traceback — fixes [#129](https://github.com/wandb/rai-toolkit/issues/129) | **Merged** · after full human review: changes requested on the exception boundary, corrected to the maintainer's spec, approved |
-
-### ECMWF WeatherGenerator — machine-learning weather forecasting model
+## ECMWF WeatherGenerator
 
 | Pull request | What it fixes | Status |
 |---|---|---|
@@ -164,59 +116,31 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 | [#3030 — fix legacy metrics lookup level](https://github.com/ecmwf/WeatherGenerator/pull/3030) | The metrics-file backwards-compatibility branch probed a path no released version ever wrote, so reading any pre-rename run crashed with `FileNotFoundError` instead of using the compat file — fixes [#3029](https://github.com/ecmwf/WeatherGenerator/issues/3029), a self-found bug traced through the #601/#1831 history | Open · CI green · in review |
 | [#3032 — fix bare-path config entries in compare_run_configs](https://github.com/ecmwf/WeatherGenerator/pull/3032) | The config-comparison tool's bare-path format crashed with a doubled directory path ever since a config-loader fix changed `model_path` semantics — fixes [#3031](https://github.com/ecmwf/WeatherGenerator/issues/3031), self-found and reproduced end-to-end before filing | Open · in review |
 
-Found through the good-first-issue queue after verifying the merge culture live: the project's last 10 merged pull requests came from ~8 different outside contributors. Picked up #1213's remaining requirement after auditing all three against the current code (two were already satisfied by earlier refactors — documented in the PR) and added the logger's first regression test, proven failing on the old API. The two follow-up fixes came from tracing historical PRs that changed path semantics and reproducing the broken behavior end-to-end before filing — each with fail-first regression tests, including the config-comparison tool's first tests.
-
-### pypdf — pure-Python PDF toolkit
+## pypdf
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#4353 — guard the remaining non-dictionary /Resources accesses](https://github.com/py-pdf/pypdf/pull/4353) | Two code paths (font listing and inline-image color-space lookup) still crashed with `TypeError` when `/Resources` was not a dictionary — the same robustness class fixed twice elsewhere in the codebase — fixes [#4352](https://github.com/py-pdf/pypdf/issues/4352), a self-found bug located by mining that repeated fix pattern | Open · in review |
 
-### NiceGUI — Python UI framework
+## NiceGUI
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#6468 — fix missing Torus export from the scene objects package](https://github.com/zauberzeug/nicegui/pull/6468) | `Torus` shipped in 3.19.0 with a scene method but the objects package forgot the import and `__all__` entry, so the documented import path raised `ImportError` | Closed — same fix already open as [#6461](https://github.com/zauberzeug/nicegui/pull/6461) by the issue reporter and scheduled for 4.1 |
 
-Selected through a data-backed vetting pipeline (merge culture measured over the last 60 days, release cadence, AI policies read in full, labeled-issue queues verified claimable) alongside two more projects now in the rotation: Arize-ai/phoenix (AI observability) and pypdf — the latter with an explicit AI-assistance policy in its contributing guide.
-
----
-
-## Phase 3 — Apache Software Foundation
-
-New phase: contributing inside the Apache Software Foundation, entered data-first — 31 Apache projects measured live on merge culture (last-100 closed PRs, 30-day merge velocity, outsider-merge rate) before picking targets, then the same self-found-bug entry that works in the tightest queues.
-
-### Apache Iceberg — PyIceberg (Python)
+## Apache Iceberg (PyIceberg)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#4285 — handle negative-scale Decimals in increment, decrement and truncate_decimal](https://github.com/apache/iceberg-python/pull/4285) | Three remaining call sites of a `Decimal` scale misread (`abs()` applied to the exponent) turned `1E+2` into `0.02` on increment — four orders of magnitude off; the same root cause was fixed elsewhere by #3997 — fixes [#4284](https://github.com/apache/iceberg-python/issues/4284), self-found by mining recently merged validation fixes for unfixed siblings | Open · all 20 CI checks green · mergeable · in review |
-
-Four regression tests, including the first-ever coverage of `truncate_decimal` — whose normal-path case also pins the floor-toward-negative-infinity behavior. Every test proven failing on `main` first; DCO signed.
-
 | [#4287 — reject non-finite floats on conversion to Decimal](https://github.com/apache/iceberg-python/pull/4287) | An infinity float/double literal crashed `to(DecimalType)` with a bare `decimal.InvalidOperation` instead of the module's standard conversion error — fixes [#4286](https://github.com/apache/iceberg-python/issues/4286), self-found while auditing the conversion surfaces for unfixed siblings | Open · in review |
 
-### Apache Airflow — Task SDK (Python)
+## Apache Airflow (Task SDK)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#76481 — Fix `SecretCache` export in `airflow.sdk`](https://github.com/apache/airflow/pull/76481) | `SecretCache` resolved at runtime through the lazy-import map but was missing from `__all__` and the TYPE_CHECKING re-exports, so type checkers flagged every import — including seven inside Airflow core itself; same drift class as the project's own `lineage` fix | Open · in review |
-
-Adds a static consistency test so any future lazy-import name missing from the public export surfaces fails CI — prevention for the whole bug class, not just this instance.
-
 | [#76486 — Add `__dir__` to `airflow.sdk` so `dir()` exposes the lazy public API](https://github.com/apache/airflow/pull/76486) | The module resolved its 105-name public API through `__getattr__` alone, so `dir()` — what IDEs, REPLs and tooling discover — hid the entire surface until each name was touched; PEP 562 recommends pairing `__getattr__` with a `__dir__` | Open · in review — stacked on [#76481](https://github.com/apache/airflow/pull/76481) |
-
-Extends the same consistency-test file with a `dir()` guard, so the discovery surface can't silently regress either.
-
----
-
-## What's next
-
-- Drive the two Apache pull requests (PyIceberg, Airflow) through review — both fully CI-green on opening.
-- Land the four reflex pull requests through human review — all are bot-clean with zero unresolved threads.
-- Open the two agno pull requests as soon as their issues are triaged.
-- Track mem0/crewAI/fastmcp/layer5/ollama-python PRs to merge and update statuses here.
-- Keep the loop going: new projects entered only after verifying their merge culture live, new bugs found by reading code, every fix carrying a failing-first regression test.
 
 ---
 
