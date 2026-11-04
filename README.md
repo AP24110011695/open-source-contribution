@@ -2,9 +2,9 @@
 
 One link with everything I ship to open source. Every pull request, bug report and fix below is real, linked, and verifiable — no screenshots-only portfolio.
 
-**About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
+**About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools, data-infrastructure and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 36 pull requests across 13 projects — 3 merged, 27 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · 13 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 38 pull requests across 15 projects — 3 merged, 29 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · 14 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -182,8 +182,31 @@ Selected through a data-backed vetting pipeline (merge culture measured over the
 
 ---
 
+## Phase 3 — Apache Software Foundation
+
+New phase: contributing inside the Apache Software Foundation, entered data-first — 31 Apache projects measured live on merge culture (last-100 closed PRs, 30-day merge velocity, outsider-merge rate) before picking targets, then the same self-found-bug entry that works in the tightest queues.
+
+### Apache Iceberg — PyIceberg (Python)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#4285 — handle negative-scale Decimals in increment, decrement and truncate_decimal](https://github.com/apache/iceberg-python/pull/4285) | Three remaining call sites of a `Decimal` scale misread (`abs()` applied to the exponent) turned `1E+2` into `0.02` on increment — four orders of magnitude off; the same root cause was fixed elsewhere by #3997 — fixes [#4284](https://github.com/apache/iceberg-python/issues/4284), self-found by mining recently merged validation fixes for unfixed siblings | Open · all 20 CI checks green · mergeable · in review |
+
+Four regression tests, including the first-ever coverage of `truncate_decimal` — whose normal-path case also pins the floor-toward-negative-infinity behavior. Every test proven failing on `main` first; DCO signed.
+
+### Apache Airflow — Task SDK (Python)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#76481 — Fix `SecretCache` export in `airflow.sdk`](https://github.com/apache/airflow/pull/76481) | `SecretCache` resolved at runtime through the lazy-import map but was missing from `__all__` and the TYPE_CHECKING re-exports, so type checkers flagged every import — including seven inside Airflow core itself; same drift class as the project's own `lineage` fix | Open · in review |
+
+Adds a static consistency test so any future lazy-import name missing from the public export surfaces fails CI — prevention for the whole bug class, not just this instance.
+
+---
+
 ## What's next
 
+- Drive the two Apache pull requests (PyIceberg, Airflow) through review — both fully CI-green on opening.
 - Land the four reflex pull requests through human review — all are bot-clean with zero unresolved threads.
 - Open the two agno pull requests as soon as their issues are triaged.
 - Track mem0/crewAI/fastmcp/layer5/ollama-python PRs to merge and update statuses here.
