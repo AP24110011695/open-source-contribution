@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools, data-infrastructure and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 38 pull requests and 14 bug reports across 16 projects (14 pre-Apache + apache/iceberg-python + apache/airflow) — 3 merged, 29 pull requests under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 40 pull requests and 14 bug reports across 16 projects (14 pre-Apache + apache/iceberg-python + apache/airflow) — 3 merged, 31 pull requests under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -194,6 +194,8 @@ New phase: contributing inside the Apache Software Foundation, entered data-firs
 
 Four regression tests, including the first-ever coverage of `truncate_decimal` — whose normal-path case also pins the floor-toward-negative-infinity behavior. Every test proven failing on `main` first; DCO signed.
 
+| [#4287 — reject non-finite floats on conversion to Decimal](https://github.com/apache/iceberg-python/pull/4287) | An infinity float/double literal crashed `to(DecimalType)` with a bare `decimal.InvalidOperation` instead of the module's standard conversion error — fixes [#4286](https://github.com/apache/iceberg-python/issues/4286), self-found while auditing the conversion surfaces for unfixed siblings | Open · in review |
+
 ### Apache Airflow — Task SDK (Python)
 
 | Pull request | What it fixes | Status |
@@ -201,6 +203,10 @@ Four regression tests, including the first-ever coverage of `truncate_decimal` �
 | [#76481 — Fix `SecretCache` export in `airflow.sdk`](https://github.com/apache/airflow/pull/76481) | `SecretCache` resolved at runtime through the lazy-import map but was missing from `__all__` and the TYPE_CHECKING re-exports, so type checkers flagged every import — including seven inside Airflow core itself; same drift class as the project's own `lineage` fix | Open · in review |
 
 Adds a static consistency test so any future lazy-import name missing from the public export surfaces fails CI — prevention for the whole bug class, not just this instance.
+
+| [#76486 — Add `__dir__` to `airflow.sdk` so `dir()` exposes the lazy public API](https://github.com/apache/airflow/pull/76486) | The module resolved its 105-name public API through `__getattr__` alone, so `dir()` — what IDEs, REPLs and tooling discover — hid the entire surface until each name was touched; PEP 562 recommends pairing `__getattr__` with a `__dir__` | Open · in review — stacked on [#76481](https://github.com/apache/airflow/pull/76481) |
+
+Extends the same consistency-test file with a `dir()` guard, so the discovery surface can't silently regress either.
 
 ---
 
