@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 36 pull requests across 13 projects — 2 merged, 28 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · 13 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 36 pull requests across 13 projects — 3 merged, 27 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · 13 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -18,7 +18,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 ### Review track record
 
-Across every review bots and maintainers have left on these PRs: **16 findings raised → 14 fixed the same session with regression tests, 1 escalated to a tracked design question for maintainers, 1 documentation wording fix.** Nothing unresolved. Zero findings survived a second review.
+Across every review round AI reviewers and maintainers have left on these pull requests (multiple bots on several projects, plus human maintainer reviews): **every confirmed finding was fixed the same session with regression tests, one became a tracked design question for maintainers, and nothing remained unresolved.** Where a reviewer's finding was withdrawn after re-verification, that exchange is public on the pull request. Zero findings survived a second review.
 
 Words from project reviewers:
 
@@ -37,6 +37,7 @@ Words from project reviewers:
 |---|---|---|
 | [#677 — reject whitespace-only API key names](https://github.com/nikhilb2/simple_invoicing/pull/677) | `POST /api/api-keys/` saved a name of only spaces as an empty string; now returns 422 — merged within the hour of opening | simple_invoicing |
 | [#678 — reject blank units and unknown statuses on product update](https://github.com/nikhilb2/simple_invoicing/pull/678) | Product updates silently accepted a blank unit and any status string; now reuses the create-path unit validation and bounds status to active/inactive with 422s — merged the same day, after addressing a maintainer change request with the requested API-level test | simple_invoicing |
+| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error, while a valid model's own factory or constructor failures keep their original exception and traceback — merged after a full human review cycle: changes requested on the exception boundary, corrected to the maintainer's spec, approved | rai-toolkit (Weights & Biases) |
 
 ---
 
@@ -153,7 +154,7 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error matching the CLI's established convention, while a valid model's own factory or constructor failures keep their original exception and traceback — fixes [#129](https://github.com/wandb/rai-toolkit/issues/129) | Open · maintainer-reviewed · exception boundary corrected to their spec · 8 propagation regression tests added |
+| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error matching the CLI's established convention, while a valid model's own factory or constructor failures keep their original exception and traceback — fixes [#129](https://github.com/wandb/rai-toolkit/issues/129) | **Merged** · after full human review: changes requested on the exception boundary, corrected to the maintainer's spec, approved |
 
 ### ECMWF WeatherGenerator — machine-learning weather forecasting model
 
