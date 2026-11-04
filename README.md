@@ -174,6 +174,14 @@ All of my open source work in one place — every pull request, bug report and f
 | [#76481 — Fix `SecretCache` export in `airflow.sdk`](https://github.com/apache/airflow/pull/76481) | `SecretCache` resolved at runtime through the lazy-import map but was missing from `__all__` and the TYPE_CHECKING re-exports, so type checkers flagged every import — including seven inside Airflow core itself; same drift class as the project's own `lineage` fix | 🟢 Open · in review |
 | [#76486 — Add `__dir__` to `airflow.sdk` so `dir()` exposes the lazy public API](https://github.com/apache/airflow/pull/76486) | The module resolved its 105-name public API through `__getattr__` alone, so `dir()` — what IDEs, REPLs and tooling discover — hid the entire surface until each name was touched; PEP 562 recommends pairing `__getattr__` with a `__dir__` | 🟢 Open · in review — stacked on [#76481](https://github.com/apache/airflow/pull/76481) |
 
+<a name="hertzbeat"></a>
+
+## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache HertzBeat (real-time monitoring)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#4528 — recognize default-key ciphertext in `isCiphertext` under a custom key](https://github.com/apache/hertzbeat/pull/4528) | `isCiphertext` answered `false` for data encoded with the default secret key while a custom key was configured, while `aesDecode` decrypted the same payload via its default-key fallback — so callers deciding decrypt-vs-use-as-is treated real ciphertext as plaintext (three live call sites; a fourth already worked around it) — fixes [#4527](https://github.com/apache/hertzbeat/issues/4527), self-found by mining the project's fresh credential-hardening fixes for siblings | 🟢 Open · in review |
+
 ---
 
 *This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
