@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools, data-infrastructure and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 38 pull requests across 15 projects — 3 merged, 29 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · 14 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 38 pull requests and 14 bug reports across 16 projects (14 pre-Apache + apache/iceberg-python + apache/airflow) — 3 merged, 29 pull requests under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
