@@ -4,7 +4,7 @@ One link with everything I ship to open source. Every pull request, bug report a
 
 **About me:** B.Tech CSE student. Python / C++ / React / FastAPI. I contribute to projects in the AI-agents, MCP, developer-tools and web-framework space — picking real bugs, writing failing regression tests first, and seeing fixes through review.
 
-**Snapshot:** 35 pull requests across 12 projects — 2 merged, 28 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 1 closed in favor of an assigned fix — · 12 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
+**Snapshot:** 35 pull requests across 12 projects — 2 merged, 27 under review, 3 gated on mem0 triage, 1 withdrawn as a duplicate, 2 closed in favor of an already-open fix — · 12 bug reports filed · fixes passing CI and reviewed by maintainers · merges tracked here as they land.
 
 ---
 
@@ -153,7 +153,7 @@ Found by code inspection of the streaming and error paths and reproduced over a 
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error matching the CLI's established convention — fixes [#129](https://github.com/wandb/rai-toolkit/issues/129) | Open · failing-first tests · awaiting review |
+| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error matching the CLI's established convention, while a valid model's own factory or constructor failures keep their original exception and traceback — fixes [#129](https://github.com/wandb/rai-toolkit/issues/129) | Open · maintainer-reviewed · exception boundary corrected to their spec · 8 propagation regression tests added |
 
 ### ECMWF WeatherGenerator — machine-learning weather forecasting model
 
@@ -169,7 +169,7 @@ Found through the good-first-issue queue after verifying the merge culture live:
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#6468 — fix missing Torus export from the scene objects package](https://github.com/zauberzeug/nicegui/pull/6468) | `Torus` shipped in 3.19.0 with a scene method but the objects package forgot the import and `__all__` entry, so the documented import path raised `ImportError` — plus a package-wide export-consistency test so the next new object can't be forgotten | Open · in review |
+| [#6468 — fix missing Torus export from the scene objects package](https://github.com/zauberzeug/nicegui/pull/6468) | `Torus` shipped in 3.19.0 with a scene method but the objects package forgot the import and `__all__` entry, so the documented import path raised `ImportError` | Closed — same fix already open as [#6461](https://github.com/zauberzeug/nicegui/pull/6461) by the issue reporter and scheduled for 4.1 |
 
 Selected through a data-backed vetting pipeline (merge culture measured over the last 60 days, release cadence, AI policies read in full, labeled-issue queues verified claimable) alongside two more projects now in the rotation: Arize-ai/phoenix (AI observability) and pypdf — the latter with an explicit AI-assistance policy in its contributing guide.
 
