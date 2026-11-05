@@ -194,6 +194,12 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#27375 — handle empty values in FieldParser converters and setEmptyValue](https://github.com/apache/pulsar/pull/27375) | `stringToLong("")`/`stringToFloat("")` crashed with `NumberFormatException` while the Integer/Double siblings return `null` (their guard was never added to these two), and `setEmptyValue`'s String check compared the type object's class to `String.class` — always false — so blank values left stale Strings instead of clearing them — fixes [#27374](https://github.com/apache/pulsar/issues/27374), self-found by reading the config-parsing utilities against their own sibling patterns | 🟢 Open · in review |
 
+## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache Superset (data visualization)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | 🟢 Open · in review |
+
 ---
 
 *This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
