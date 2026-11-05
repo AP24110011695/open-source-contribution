@@ -214,6 +214,14 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` and `pipx reinstall-all` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — fixes [#2422](https://github.com/pypa/pipx/issues/2422), self-found by auditing the killed-install hardening series for the command its changelog promised but never wired | 🟢 Open · in review |
 
+<a name="pytorch"></a>
+
+## <img src="https://github.com/pytorch.png" width="24" alt="PyTorch"> PyTorch
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#203631 — validate SGD's dampening range](https://github.com/pytorch/pytorch/issues/203631) | SGD checks `lr`, `momentum` and `weight_decay` but not `dampening`, so values outside [0, 1] are silently accepted and the momentum buffer extrapolates instead of interpolating — a buffer that swings negative or grows without bound, with no error, on both the foreach and single-tensor paths; every sibling optimizer already validates its range-bounded parameters (Adadelta's `rho`, RMSprop's `alpha`, Adagrad's `lr_decay`, ASGD's `lambd`/`alpha`) — self-found by comparing each optimizer's validators against the parameters its update math actually consumes | 🟡 Issue filed · awaiting `actionable` label · PR queued behind it (PyTorch requires the label before a PR) |
+
 ---
 
 *This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
