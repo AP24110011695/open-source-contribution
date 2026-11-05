@@ -200,6 +200,12 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | 🟢 Open · in review |
 
+## <img src="https://github.com/pypa.png" width="24" alt="pipx"> pipx
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` and `pipx reinstall-all` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — fixes [#2422](https://github.com/pypa/pipx/issues/2422), self-found by auditing the killed-install hardening series for the command its changelog promised but never wired | 🟢 Open · in review |
+
 ---
 
 *This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
