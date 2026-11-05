@@ -188,6 +188,12 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#8484 — trim whitespace in `normalize_root`](https://github.com/apache/opendal/pull/8484) | `normalize_root`'s own documented rules say whitespace is trimmed (identical wording to `normalize_path`, which trims and is pinned-tested), but the code never did — a root configured as `" my-dir "` became `"/ my-dir /"` and every object path under the backend silently carried the spaces | 🟢 Open · in review |
 
+## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache Pulsar (pub-sub messaging)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#27375 — handle empty values in FieldParser converters and setEmptyValue](https://github.com/apache/pulsar/pull/27375) | `stringToLong("")`/`stringToFloat("")` crashed with `NumberFormatException` while the Integer/Double siblings return `null` (their guard was never added to these two), and `setEmptyValue`'s String check compared the type object's class to `String.class` — always false — so blank values left stale Strings instead of clearing them — fixes [#27374](https://github.com/apache/pulsar/issues/27374), self-found by reading the config-parsing utilities against their own sibling patterns | 🟢 Open · in review |
+
 ---
 
 *This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
