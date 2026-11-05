@@ -200,6 +200,14 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | 🟢 Open · in review |
 
+<a name="onnx"></a>
+
+## <img src="https://github.com/onnx.png" width="24" alt="ONNX"> ONNX (Linux Foundation)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#8758 — accept omitted optional inputs in Dropout](https://github.com/onnx/onnx/pull/8758) | The reference implementation picked `Dropout`'s optional inputs by position count, but the evaluator hands over an omitted optional input as `None` instead of dropping it — so a training-mode model that leaves out `ratio` (legal per spec; the default is 0.5) crashed with a `TypeError`, and every opset-12 node carrying the `training_mode` attribute failed before the implementation even ran, because that attribute arrived as a keyword the function never declared. Found with a differential sweep that omits each optional input from all 1,876 node tests and runs the result through the reference evaluator — `Dropout` was the only op whose crash wasn't a deliberate validation guard | 🟢 Open · DCO pass · required checks pending |
+
 ## <img src="https://github.com/pypa.png" width="24" alt="pipx"> pipx
 
 | Pull request | What it fixes | Status |
