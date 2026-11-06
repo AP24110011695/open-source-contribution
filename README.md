@@ -225,6 +225,14 @@ All of my open source work in one place — every pull request, bug report and f
 
 <a name="pytorch"></a>
 
+## <img src="https://github.com/meta-pytorch.png" width="24" alt="BoTorch"> BoTorch
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#3550 — preserve float64 precision of a Python-float best_f](https://github.com/meta-pytorch/botorch/pull/3550) | The analytic acquisition functions document `best_f` as "either a scalar or a `b`-dim Tensor", but the scalar form was rounded through the default dtype at construction while the Tensor form kept full precision — and Expected Improvement is exponentially sensitive to `best_f`, so with a double model and a large-magnitude incumbent the two forms disagreed by 137 orders of magnitude (EI `7.07e-02` vs `1.51e-139`) — fixes [#3549](https://github.com/meta-pytorch/botorch/issues/3549), self-found by mining the just-merged `make_scipy_bounds` precision fix (#3542) for the same Python-scalar-through-default-dtype class across the acquisition package | 🟢 Open · all local tests green incl. new regression test · Meta CLA signature pending |
+
+<a name="pytorch-core"></a>
+
 ## <img src="https://github.com/pytorch.png" width="24" alt="PyTorch"> PyTorch
 
 | Pull request | What it fixes | Status |
