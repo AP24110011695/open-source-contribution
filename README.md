@@ -2,8 +2,6 @@
 
 All of my open source work in one place — every pull request, bug report and fix below is real and linked.
 
-[Merged](#merged) · [crewAI](#crewai) · [fastmcp](#fastmcp) · [layer5](#layer5) · [mem0](#mem0) · [reflex](#reflex) · [agno](#agno) · [ollama-python](#ollama) · [Powertools](#powertools) · [Actual Budget](#actual) · [WeatherGenerator](#weathergen) · [pypdf](#pypdf) · [NiceGUI](#nicegui) · [Iceberg](#iceberg) · [Airflow](#airflow)
-
 🟢 in review · 🟡 waiting on a maintainer · 🔒 gated on triage · ⚪ closed
 
 ---
