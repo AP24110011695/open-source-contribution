@@ -201,6 +201,13 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | 🟢 Open · in review |
 
+## <img src="https://github.com/zephyrproject-rtos.png" width="24" alt="Zephyr"> Zephyr RTOS (Linux Foundation)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#124926 — unlock interrupts on error paths in rx_enable](https://github.com/zephyrproject-rtos/zephyr/pull/124926) | `ifx_cat1_uart_async_rx_enable()` locked interrupts before validating its arguments and DMA state, but four error paths returned without unlocking — a caller passing a bad buffer or racing an active RX got the system frozen with interrupts disabled. Found by scanning every `irq_lock()` error path in `drivers/` after the same bug was fixed in two DMA drivers a day apart | 🟢 Open · in review |
+| [#124927 — unlock interrupts on invalid pin configurations](https://github.com/zephyrproject-rtos/zephyr/pull/124927) | Two GPIO drivers returned `-ENOTSUP` from their configure callbacks with interrupts still locked — one rejected a pin set as both input and output, the other fell through the direction switch's default arm. Both now unlock before returning | 🟢 Open · in review |
+
 <a name="onnx"></a>
 
 ## <img src="https://github.com/onnx.png" width="24" alt="ONNX"> ONNX (Linux Foundation)
