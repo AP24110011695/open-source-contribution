@@ -223,6 +223,12 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` and `pipx reinstall-all` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — fixes [#2422](https://github.com/pypa/pipx/issues/2422), self-found by auditing the killed-install hardening series for the command its changelog promised but never wired | ✅ Merged — approved by the maintainer within the hour |
 
+## <img src="https://github.com/pypa.png" width="24" alt="wheel"> wheel
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#719 — don't leave the .dist-info directory renamed when 'wheel pack --local-version' fails](https://github.com/pypa/wheel/pull/719) | The rename to the new name-version `.dist-info` directory ran before anything else could fail, so a missing `METADATA` or `WHEEL` file, a `WHEEL` file without tags, or any write error left the unpacked directory under a name no wheel was ever produced for — everything that can fail before the rename now runs before it, and a failure after it puts the directory back — fixes [#713](https://github.com/pypa/wheel/issues/713), four regression tests each verified to fail on the unfixed code | 🟢 Open · all 17 CI checks green |
+
 <a name="pytorch"></a>
 
 ## <img src="https://github.com/meta-pytorch.png" width="24" alt="BoTorch"> BoTorch
