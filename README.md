@@ -227,7 +227,7 @@ All of my open source work in one place — every pull request, bug report and f
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#719 — don't leave the .dist-info directory renamed when 'wheel pack --local-version' fails](https://github.com/pypa/wheel/pull/719) | The rename to the new name-version `.dist-info` directory ran before anything else could fail, so a missing `METADATA` or `WHEEL` file, a `WHEEL` file without tags, or any write error left the unpacked directory under a name no wheel was ever produced for — everything that can fail before the rename now runs before it, and a failure after it puts the directory back — fixes [#713](https://github.com/pypa/wheel/issues/713), four regression tests each verified to fail on the unfixed code | 🟢 Open · all 17 CI checks green |
+| [#719 — don't leave the .dist-info directory renamed when 'wheel pack --local-version' fails](https://github.com/pypa/wheel/pull/719) | The rename to the new name-version `.dist-info` directory ran before anything else could fail, so a missing `METADATA` or `WHEEL` file, a `WHEEL` file without tags, or any write error left the unpacked directory under a name no wheel was ever produced for — everything that can fail before the rename now runs before it, and a failure after it puts the directory back — fixes [#713](https://github.com/pypa/wheel/issues/713), four regression tests each verified to fail on the unfixed code | ⚪ Withdrawn — an earlier fix ([#714](https://github.com/pypa/wheel/pull/714)) existed; closed in its favor with the guard + tests offered as a contribution there |
 
 <a name="pytorch"></a>
 
