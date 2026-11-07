@@ -239,6 +239,14 @@ I also review pull requests from other contributors in Apache projects. An appro
 | [#124961 — unlock interrupts on USB error paths](https://github.com/zephyrproject-rtos/zephyr/pull/124961) | The Renesas RA UDC returned `-EIO` from endpoint-dequeue with interrupts still locked when transfer abort failed, and the SAM USBC attach returned the pinctrl error the same way — leaving the system frozen after a rejected attach. Both now unlock before returning | 🟢 Open · in review |
 | [#124962 — unlock interrupts on grant double-free](https://github.com/zephyrproject-rtos/zephyr/pull/124962) | Xen's grant-table release path logged a warning and returned from the double-free case with interrupts still locked — a repeated release froze the system permanently. Now unlocks before returning | 🟢 Open · in review |
 
+<a name="osquery"></a>
+
+## <img src="https://github.com/osquery.png" width="24" alt="osquery"> osquery (Linux Foundation)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#9280 — reject truncated shellbag file-entry records instead of throwing](https://github.com/osquery/osquery/pull/9280) | `fileEntry()` subtracted 8 from the position of the `0400EFBE` signature it found anywhere in attacker-controlled shellbag data — a record starting with that signature underflowed the unsigned offset past its zero-check, and truncated records made `substr()` throw `std::out_of_range`, which the table layer turns into a failed query: one malformed registry value silently killed the entire `shellbags` query. Three guards now return the existing unsupported sentinel; found as the missed sibling of #9218's drive-item guards | 🟢 Open · in review |
+
 <a name="onnx"></a>
 
 ## <img src="https://github.com/onnx.png" width="24" alt="ONNX"> ONNX (Linux Foundation)
