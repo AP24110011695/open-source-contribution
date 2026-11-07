@@ -1,6 +1,6 @@
 # Open Source Contributions — Ayush (AP24110011695)
 
-All of my open source work in one place — every pull request, bug report and fix below is real and linked.
+All of my open source work in one place — every pull request, bug report, review and fix below is real and linked.
 
 🟢 in review · 🟡 waiting on a maintainer · 🔒 gated on triage · ⚪ closed
 
@@ -13,6 +13,7 @@ All of my open source work in one place — every pull request, bug report and f
 - I read each project's contribution rules before opening anything — sign-offs, issue gates, PR templates — so nothing I send breaks their flow.
 - Every pull request explains the root cause and links the issue it fixes.
 - When a reviewer leaves feedback, I fix it the same day and reply with the commit that addresses it.
+- When I approve someone else's pull request, it's because I checked out their branch, ran the tests, and reproduced the bug on the unfixed code first — not because the diff looked fine.
 - Tests mock real external services — never the code under test.
 
 ---
@@ -26,6 +27,21 @@ All of my open source work in one place — every pull request, bug report and f
 | [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error, while a valid model's own factory or constructor failures keep their original exception and traceback — merged after a full human review cycle: changes requested on the exception boundary, corrected to the maintainer's spec, approved | rai-toolkit (Weights & Biases) |
 | [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` and `pipx reinstall-all` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — approved by the maintainer within the hour, merged the same night | pipx (PyPA) |
 | [#2431 — report existing PATH entries accurately](https://github.com/pypa/pipx/pull/2431) | every repeat `pipx ensurepath` run claimed "all pipx binary directories have been appended to PATH" when nothing was appended — the directories were already in PATH, so the summary reported a change that did not happen and pointed users at `--force`; reworded to report the true state and the `--force`/`--prepend` way to re-add, with the summary checking every directory before making the claim — merged by the lead maintainer with the `bug` label | pipx (PyPA) |
+
+---
+
+## Code reviews — other contributors' pull requests
+
+I also review pull requests from other contributors in Apache projects. An approval from me means I checked out the branch, ran the tests, and reproduced the bug being fixed on the unfixed code first.
+
+| Review | What I verified | Outcome |
+|---|---|---|
+| [#4292 — apply every delete file when rewriting files for a partial delete](https://github.com/apache/iceberg-python/pull/4292#pullrequestreview-5807190431) — PyIceberg | a partial delete could resurrect deleted rows when filtered reads bounds-prune delete files — confirmed the fix's rationale, ran the new test across three catalog fixtures, reproduced the exact deleted-rows-returning failure on the unfixed code, and ran the 721-test behavior regression slice | ✅ Approved — failure reproduced fail-first locally |
+| [#4529 — fail MonitorServiceTest if nothing throws](https://github.com/apache/hertzbeat/pull/4529#pullrequestreview-5805159800) — HertzBeat | read all 11 try/catch → assertThrows conversions, ran the test module locally (71/71 green), then did an independent mutation check: commenting out a real throw in the service made the new test fail — proving the old pattern would have passed silently | ✅ Approved — 71/71 green locally + mutation check |
+| [#4296 — read a file without avro.codec as uncompressed](https://github.com/apache/iceberg-python/pull/4296#pullrequestreview-5804767229) — PyIceberg | ran the new codec tests on the branch and reproduced the pre-fix failure (`Unsupported codec: gzip`) on the old code, then mapped every config-fallback site the one-line change touches | ✅ Approved — fail-first reproduced locally |
+| [#4289 — skip unknown nested fields when resolving Avro read schemas](https://github.com/apache/iceberg-python/pull/4289#pullrequestreview-5790634073) — PyIceberg | ran the PR's own test locally and probed all four type-mismatch guarantees (map-vs-string, list-vs-map, top-level and field-level) still raise | 💬 Commented — suggested a field-level mismatch regression test |
+| [#4526 — add the missing SSL parameter to HDFS NameNode/DataNode/YARN](https://github.com/apache/hertzbeat/pull/4526#pullrequestreview-5790679437) — HertzBeat | traced the diagnosis end-to-end (the placeholder survives substitution, so `Boolean.parseBoolean` always answers false), then scope-checked it: grepped all 40 templates using the SSL placeholder — the PR's 3 files are the complete set | 💬 Commented — confirmed the scope is complete |
+| [#76629 — DAG-level on_failure_callback dropped on detached session errors](https://github.com/apache/airflow/pull/76629#pullrequestreview-5807222864) — Airflow | verified the exception-catch hierarchy statically (`PendingRollbackError`/`InvalidRequestError` both escape the `DetachedInstanceError`-only catch) and flagged a sibling path pruning entries the same way | 💬 Commented — same-class sibling flagged |
 
 ---
 
@@ -194,11 +210,25 @@ All of my open source work in one place — every pull request, bug report and f
 |---|---|---|
 | [#27375 — handle empty values in FieldParser converters and setEmptyValue](https://github.com/apache/pulsar/pull/27375) | `stringToLong("")`/`stringToFloat("")` crashed with `NumberFormatException` while the Integer/Double siblings return `null` (their guard was never added to these two), and `setEmptyValue`'s String check compared the type object's class to `String.class` — always false — so blank values left stale Strings instead of clearing them — fixes [#27374](https://github.com/apache/pulsar/issues/27374), self-found by reading the config-parsing utilities against their own sibling patterns | 🟢 Open · in review |
 
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#27377 — `RelativeTimeUtil` silently fabricates values for overflow-sized inputs](https://github.com/apache/pulsar/issues/27377) | every other malformed input raises, but `"15252526452552645w"` returns a wrapped garbage value — the JDK `TimeUnit` conversion saturates at `Long.MAX_VALUE` seconds and the week/year step then wraps it; measured on the project's own compiled classes, with the fix proven fail-first through the project's gradle setup | 🟡 Filed — fix branch staged, PR opens once #27375 gets its first maintainer signal |
+
 ## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache Superset (data visualization)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | 🟢 Open · in review |
+
+## <img src="https://github.com/dapr.png" width="24" alt="Dapr"> Dapr (CNCF)
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [kit #179 — ISO 8601 duration parser accepts overflowing and negative components](https://github.com/dapr/kit/issues/179) | the parser accepts hours far beyond any sane range and negative durations — downstream the scheduler builds `@every` intervals from them, a `uint32` truncation fires, and negative repeat counts never decrement; filed with a probe table after checking the project's four open parser issues for overlap | 🟡 Filed — fix PR staged behind the in-flight parser PRs |
+| [#11056 — actor reminder/timer APIs panic on a `null` body](https://github.com/dapr/dapr/issues/11056#issuecomment-6691551369) | confirmed the reporter's crash with a unit probe at both panic sites and pinned the mechanism: a `*struct` unmarshal target becomes nil on JSON `null`, then a field dereference panics | 🟢 Confirmed — repro + mechanism posted |
+| [#11050 — an unknown CEL expression identifier hangs daprd in an infinite compile loop](https://github.com/dapr/dapr/issues/11050#issuecomment-6691611633) | confirmed with a probe that never returns: a compile error shares its message prefix with the "missing variable" path, so the expression recompiles forever — affects pubsub routing rules and circuit-breaker expressions | 🟢 Confirmed — repro + mechanism posted |
+
+<a name="zephyr"></a>
 
 ## <img src="https://github.com/zephyrproject-rtos.png" width="24" alt="Zephyr"> Zephyr RTOS (Linux Foundation)
 
