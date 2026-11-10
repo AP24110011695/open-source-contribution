@@ -244,6 +244,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#4528 — recognize default-key ciphertext in `isCiphertext` under a custom key](https://github.com/apache/hertzbeat/pull/4528) | `isCiphertext` answered `false` for data encoded with the default secret key while a custom key was configured, while `aesDecode` decrypted the same payload via its default-key fallback — so callers deciding decrypt-vs-use-as-is treated real ciphertext as plaintext (three live call sites; a fourth already worked around it) — fixes [#4527](https://github.com/apache/hertzbeat/issues/4527), self-found by mining the project's fresh credential-hardening fixes for siblings | 🟢 Open · in review |
+| [#4548 — stop jdbc connection property injection through database diagnostics](https://github.com/apache/hertzbeat/pull/4548) | the 2.0 gateway diagnostics service concatenated monitor-supplied host/port/database straight into a `jdbc:mysql://` url, so `db?allowLoadLocalInfile=true` injected arbitrary driver properties — exactly the attack class `JdbcUrlSafetyUtil` was built for in #4299, whose guard set the sibling `DatabaseToolsImpl` carries but this newer call site dropped — located by auditing every call site of the guard, regression tests verified failing-first (the injected property shows up verbatim in the driver's exception pre-fix) | 🟢 Open · in review |
 
 <a name="opendal"></a>
 
