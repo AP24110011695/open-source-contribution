@@ -24,6 +24,9 @@ Two code paths still crashed with `TypeError` on malformed PDFs — the same rob
 **[fastmcp — keep tools/list working when a root $ref resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185)**
 A valid JSON Schema (`$ref` resolving to `true`/`false`) crashed whole-server tool listing during client init. **Merged with two sibling fixes in the same batch** — URI-template variables and tag-filter ordering — four merges in one day.
 
+**[fastmcp — decode RFC 6901 escapes when extracting $defs names](https://github.com/PrefectHQ/fastmcp/pull/6180)**
+JSON-pointer-escaped schema names (`foo/bar`, `a~b`) broke schema extraction; the maintainer finalized the branch himself before merging.
+
 **[rai-toolkit (Weights & Biases) — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130)**
 `rai assess <model-ref>` answered malformed refs, missing modules and missing classes with raw Python tracebacks; now a clean input error, while a valid model's own failures keep their original traceback. **Merged after a full human review cycle** — changes requested on the exception boundary, corrected to the maintainer's spec, approved.
 
@@ -108,7 +111,8 @@ I also review pull requests from other contributors in Apache projects. An appro
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#6180 — decode RFC 6901 escapes when extracting `$defs` names](https://github.com/PrefectHQ/fastmcp/pull/6180) | JSON-pointer-escaped schema names broke schema extraction — fixes [#6034](https://github.com/PrefectHQ/fastmcp/issues/6034) | 🟡 Open · awaiting maintainer issue assignment |
+| [#6180 — decode RFC 6901 escapes when extracting `$defs` names](https://github.com/PrefectHQ/fastmcp/pull/6180) | JSON-pointer-escaped schema names broke schema extraction — fixes [#6034](https://github.com/PrefectHQ/fastmcp/issues/6034) | ✅ Merged — maintainer finalized the branch himself before merging |
+| [#6440 — compare pinned tool versions PEP 440-normalized against the listed version](https://github.com/PrefectHQ/fastmcp/pull/6440) | calling a versioned tool by an equivalent version spelling (`"1"` for a listed `"1.0"`, `"v1.0"`) ran the listed tool but silently skipped output-schema hydration and result revalidation, because the client compared versions as strings while the server matches PEP 440-normalized — fixes [#6439](https://github.com/PrefectHQ/fastmcp/issues/6439) | 🔒 Gated by the require-issue-link bot until the issue is assigned |
 | [#6185 — keep `tools/list` working when a root `$ref` resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185) | Whole-server tools listing crashed on valid schemas — fixes [#6125](https://github.com/PrefectHQ/fastmcp/issues/6125) | ✅ Merged |
 | [#6187 — support non-identifier variables in URI templates](https://github.com/PrefectHQ/fastmcp/pull/6187) | `{$top}`-style template variables never matched or forwarded; Unicode word characters that identifiers reject also disabled templates | ✅ Merged |
 | [#6188 — keep result hydration faithful for union coercions](https://github.com/PrefectHQ/fastmcp/pull/6188) | `0 → False`-style coercions silently replaced typed results; final guard also preserves schema-intended `format: json` decodes and rejects precision-losing timestamp truncation | 🟡 Open · survived three adversarial review rounds with same-session fixes · awaiting human review |
