@@ -1,15 +1,41 @@
 # Open Source Contributions — Ayush (AP24110011695)
 
-All of my open source work in one place — every pull request, bug report, review and fix below is real and linked.
+I find and fix real bugs in production open-source projects — by reading the code, writing the failing test first, and shipping small, reviewed changes. Everything on this page is real and linked.
+
+**10 PRs merged** · **30 projects** · **6 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
+
+Languages & domains: Python · Go · Java · Rust · C/C++ · TypeScript — CLI tooling, PDF parsing, ML infrastructure, data formats, CI & packaging, monitoring, pub-sub messaging
 
 🟢 in review · 🟡 waiting on a maintainer · 🔒 gated on triage · ⚪ closed
 
 ---
 
+## Highlights
+
+**[pipx (PyPA) — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423)**
+`pipx repair` reported environments whose metadata a killed install had lost as "healthy" (exit 0), while the project's own reinstall flow refuses them — so a user following `pipx list`'s fix advice got a silent no-op. Self-found by auditing the killed-install hardening series for the command its changelog promised but never wired. **Approved by the maintainer within the hour, merged the same night.**
+
+**[pipx (PyPA) — report existing PATH entries accurately](https://github.com/pypa/pipx/pull/2431)**
+Every repeat `pipx ensurepath` run claimed it had appended directories to PATH when they were already there — reporting a change that never happened and pointing users at `--force` for nothing. **Merged by the lead maintainer with the `bug` label, 27 checks green.**
+
+**[pypdf — guard the remaining non-dictionary /Resources accesses](https://github.com/py-pdf/pypdf/pull/4353)**
+Two code paths still crashed with `TypeError` on malformed PDFs — the same robustness class the project had already fixed twice elsewhere; located by mining that repeated fix pattern for unfixed siblings. **Merged after the full review cycle** — coverage requested and covered, five maintainer suggestions applied, two of them test-proven corrections to the suggestions themselves.
+
+**[fastmcp — keep tools/list working when a root $ref resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185)**
+A valid JSON Schema (`$ref` resolving to `true`/`false`) crashed whole-server tool listing during client init. **Merged with two sibling fixes in the same batch** — URI-template variables and tag-filter ordering — four merges in one day.
+
+**[rai-toolkit (Weights & Biases) — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130)**
+`rai assess <model-ref>` answered malformed refs, missing modules and missing classes with raw Python tracebacks; now a clean input error, while a valid model's own failures keep their original traceback. **Merged after a full human review cycle** — changes requested on the exception boundary, corrected to the maintainer's spec, approved.
+
+**[reflex — drop the f-string Var marker from array ref names](https://github.com/reflex-dev/reflex/pull/7707)**
+The array ref formatter folded a per-run hash into compiled ref names, defeating reproducible builds. **Approved and merged by the maintainer.**
+
+---
+
 ## How I work
 
-- I find most bugs myself by reading the code — the issues behind them are mine too, not ones I picked off a shelf.
-- Every fix starts with a small failing test on the project's own `main`, to prove the bug is real. Then the fix, and the same test passing.
+- I find most bugs myself by reading the code — the issues behind them are mine too, not ones I picked off a shelf. Example: the pypdf guards came from noticing the project had fixed the same crash class twice and asking which call sites were still missing.
+- Every fix starts with a small failing test on the project's own `main`, to prove the bug is real. Then the fix, and the same test passing. Example: the pipx `ensurepath` claim was reproduced by running the command twice and comparing what it printed against what actually changed.
 - I read each project's contribution rules before opening anything — sign-offs, issue gates, PR templates — so nothing I send breaks their flow.
 - Every pull request explains the root cause and links the issue it fixes.
 - When a reviewer leaves feedback, I fix it the same day and reply with the commit that addresses it.
@@ -47,6 +73,22 @@ I also review pull requests from other contributors in Apache projects. An appro
 | [#4289 — skip unknown nested fields when resolving Avro read schemas](https://github.com/apache/iceberg-python/pull/4289#pullrequestreview-5790634073) — PyIceberg | ran the PR's own test locally and probed all four type-mismatch guarantees (map-vs-string, list-vs-map, top-level and field-level) still raise | 💬 Commented — suggested a field-level mismatch regression test |
 | [#4526 — add the missing SSL parameter to HDFS NameNode/DataNode/YARN](https://github.com/apache/hertzbeat/pull/4526#pullrequestreview-5790679437) — HertzBeat | traced the diagnosis end-to-end (the placeholder survives substitution, so `Boolean.parseBoolean` always answers false), then scope-checked it: grepped all 40 templates using the SSL placeholder — the PR's 3 files are the complete set | 💬 Commented — confirmed the scope is complete |
 | [#76629 — DAG-level on_failure_callback dropped on detached session errors](https://github.com/apache/airflow/pull/76629#pullrequestreview-5807222864) — Airflow | verified the exception-catch hierarchy statically (`PendingRollbackError`/`InvalidRequestError` both escape the `DetachedInstanceError`-only catch) and flagged a sibling path pruning entries the same way | 💬 Commented — same-class sibling flagged |
+
+---
+
+## The full log — by project
+
+**PyPA** — [pipx](#pipx) · [wheel](#wheel) · [cibuildwheel](#cibuildwheel)
+
+**Apache** — [PyIceberg](#iceberg) · [Airflow](#airflow) · [HertzBeat](#hertzbeat) · [OpenDAL](#opendal) · [Pulsar](#pulsar) · [Superset](#superset)
+
+**CNCF** — [Dapr](#dapr) · [Argo CD](#argocd)
+
+**Linux Foundation** — [Zephyr RTOS](#zephyr) · [osquery](#osquery) · [ONNX](#onnx) · [ONNX precision](#onnx-fp32)
+
+**Meta** — [PyTorch](#pytorch-core) · [BoTorch](#botorch)
+
+**More** — [crewAI](#crewai) · [fastmcp](#fastmcp) · [layer5](#layer5) · [mem0](#mem0) · [reflex](#reflex) · [agno](#agno) · [ollama-python](#ollama) · [Powertools for AWS](#powertools) · [Actual Budget](#actual) · [ECMWF WeatherGenerator](#weathergen) · [pypdf](#pypdf) · [NiceGUI](#nicegui)
 
 ---
 
@@ -203,11 +245,15 @@ I also review pull requests from other contributors in Apache projects. An appro
 |---|---|---|
 | [#4528 — recognize default-key ciphertext in `isCiphertext` under a custom key](https://github.com/apache/hertzbeat/pull/4528) | `isCiphertext` answered `false` for data encoded with the default secret key while a custom key was configured, while `aesDecode` decrypted the same payload via its default-key fallback — so callers deciding decrypt-vs-use-as-is treated real ciphertext as plaintext (three live call sites; a fourth already worked around it) — fixes [#4527](https://github.com/apache/hertzbeat/issues/4527), self-found by mining the project's fresh credential-hardening fixes for siblings | 🟢 Open · in review |
 
+<a name="opendal"></a>
+
 ## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache OpenDAL (data access layer)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#8484 — trim whitespace in `normalize_root`](https://github.com/apache/opendal/pull/8484) | `normalize_root`'s own documented rules say whitespace is trimmed (identical wording to `normalize_path`, which trims and is pinned-tested), but the code never did — a root configured as `" my-dir "` became `"/ my-dir /"` and every object path under the backend silently carried the spaces | 🟢 Open · in review |
+
+<a name="pulsar"></a>
 
 ## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache Pulsar (pub-sub messaging)
 
@@ -219,11 +265,15 @@ I also review pull requests from other contributors in Apache projects. An appro
 |---|---|---|
 | [#27377 — `RelativeTimeUtil` silently fabricates values for overflow-sized inputs](https://github.com/apache/pulsar/issues/27377) | every other malformed input raises, but `"15252526452552645w"` returns a wrapped garbage value — the JDK `TimeUnit` conversion saturates at `Long.MAX_VALUE` seconds and the week/year step then wraps it; measured on the project's own compiled classes, with the fix proven fail-first through the project's gradle setup | 🟡 Filed — fix branch staged, PR opens once #27375 gets its first maintainer signal |
 
+<a name="superset"></a>
+
 ## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache Superset (data visualization)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | 🟢 Open · in review |
+
+<a name="dapr"></a>
 
 ## <img src="https://github.com/dapr.png" width="24" alt="Dapr"> Dapr (CNCF)
 
@@ -232,6 +282,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 | [kit #179 — ISO 8601 duration parser accepts overflowing and negative components](https://github.com/dapr/kit/issues/179) | the parser accepts hours far beyond any sane range and negative durations — downstream the scheduler builds `@every` intervals from them, a `uint32` truncation fires, and negative repeat counts never decrement; filed with a probe table after checking the project's four open parser issues for overlap | 🟡 Filed — fix PR staged behind the in-flight parser PRs |
 | [#11056 — actor reminder/timer APIs panic on a `null` body](https://github.com/dapr/dapr/issues/11056#issuecomment-6691551369) | confirmed the reporter's crash with a unit probe at both panic sites and pinned the mechanism: a `*struct` unmarshal target becomes nil on JSON `null`, then a field dereference panics | 🟢 Confirmed — repro + mechanism posted |
 | [#11050 — an unknown CEL expression identifier hangs daprd in an infinite compile loop](https://github.com/dapr/dapr/issues/11050#issuecomment-6691611633) | confirmed with a probe that never returns: a compile error shares its message prefix with the "missing variable" path, so the expression recompiles forever — affects pubsub routing rules and circuit-breaker expressions | 🟢 Confirmed — repro + mechanism posted |
+| [#11032 — outbox PublishInternal panics on multi-projection transactions](https://github.com/dapr/dapr/issues/11032#issuecomment-6745667701) | confirmed with an in-package probe running the issue's exact 4-operation batch: the strip loop mutates `operations` while ranging over it — each in-place shift reassigns the slice to a narrower view, so a later iteration dies with `slice bounds out of range [4:2]` and entries are skipped along the way | 🟢 Confirmed — repro + mechanism posted |
 
 <a name="zephyr"></a>
 
@@ -252,7 +303,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 |---|---|---|
 | [#9280 — reject truncated shellbag file-entry records instead of throwing](https://github.com/osquery/osquery/pull/9280) | `fileEntry()` subtracted 8 from the position of the `0400EFBE` signature it found anywhere in attacker-controlled shellbag data — a record starting with that signature underflowed the unsigned offset past its zero-check, and truncated records made `substr()` throw `std::out_of_range`, which the table layer turns into a failed query: one malformed registry value silently killed the entire `shellbags` query. Three guards now return the existing unsupported sentinel; found as the missed sibling of #9218's drive-item guards | 🟢 **Approved** · all CI green · awaiting merge |
 | [#9283 — check netlink payload lengths before typed reads in routes](https://github.com/osquery/osquery/pull/9283) | The Linux routes table walked netlink attributes with `RTA_OK()`, which validates only the attribute *header* against the remaining bytes, then dereferenced the payloads unchecked — interface indexes, metrics and addresses were read as `int`/`inet_ntop` from buffers that could end mid-field, so a truncated final attribute read past the end of the message. Every typed read now checks `RTA_PAYLOAD()`; ships with a byte-by-byte netlink test harness (the routes table's first) whose truncated-attribute cases read past the message on master | 🟢 **Approved** · awaiting merge |
-| [#9286 — reject truncated records in the remaining shellitem parsers](https://github.com/osquery/osquery/pull/9286) |
+| [#9286 — reject truncated records in the remaining shellitem parsers](https://github.com/osquery/osquery/pull/9286) | Eleven more shellbag parsers read fixed-offset fields with `substr()` and could throw on attacker-controlled truncated records, aborting the whole query — the file-entry fix (#9280) left these siblings behind. Every parser now rejects under-length records with its existing sentinel; nine tests craft records that end inside each parser's field reads | 🟢 Open · in review |
 
 <a name="onnx-fp32"></a>
 
@@ -260,7 +311,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#8772 — compute BatchNormalization training and LpNormalization in float32](https://github.com/onnx/onnx/pull/8772) | Both reference implementations did their arithmetic in float16: BatchNormalization's training-mode variance squares the input and overflows the float16 range above ~256 (output_var came out as `inf` with the true value still representable, and the output collapsed to zeros), and LpNormalization's power-2 norm overflowed the same way, returning `[0, 0, 0]` instead of `[0.42, 0.57, 0.71]`. Both now compute in float32 for float16/bfloat16 inputs — the same fix the maintainers shipped for InstanceNormalization, LRN, LogSoftmax and SoftmaxCrossEntropyLoss days earlier; found by sweeping the remaining normalization/reduction ops for the class | 🟢 Open · in review | Eleven more shellbag parsers read fixed-offset fields with `substr()` and could throw on attacker-controlled truncated records, aborting the whole query — the file-entry fix (#9280) left these siblings behind. Every parser now rejects under-length records with its existing sentinel; nine tests craft records that end inside each parser's field reads | 🟢 Open · in review |
+| [#8772 — compute BatchNormalization training and LpNormalization in float32](https://github.com/onnx/onnx/pull/8772) | Both reference implementations did their arithmetic in float16: BatchNormalization's training-mode variance squares the input and overflows the float16 range above ~256 (output_var came out as `inf` with the true value still representable, and the output collapsed to zeros), and LpNormalization's power-2 norm overflowed the same way, returning `[0, 0, 0]` instead of `[0.42, 0.57, 0.71]`. Both now compute in float32 for float16/bfloat16 inputs — the same fix the maintainers shipped for InstanceNormalization, LRN, LogSoftmax and SoftmaxCrossEntropyLoss days earlier; found by sweeping the remaining normalization/reduction ops for the class | 🟢 Open · in review |
 
 <a name="onnx"></a>
 
@@ -271,12 +322,16 @@ I also review pull requests from other contributors in Apache projects. An appro
 | [#8758 — accept omitted optional inputs in Dropout](https://github.com/onnx/onnx/pull/8758) | The reference implementation picked `Dropout`'s optional inputs by position count, but the evaluator hands over an omitted optional input as `None` instead of dropping it — so a training-mode model that leaves out `ratio` (legal per spec; the default is 0.5) crashed with a `TypeError`, and every opset-12 node carrying the `training_mode` attribute failed before the implementation even ran, because that attribute arrived as a keyword the function never declared. Found with a differential sweep that omits each optional input from all 1,876 node tests and runs the result through the reference evaluator — `Dropout` was the only op whose crash wasn't a deliberate validation guard | 🟢 Open · maintainer-approved (justinchuby) · CI awaiting first-time workflow approval |
 | [#8760 — round QLinearConv before adding y_zero_point](https://github.com/onnx/onnx/pull/8760) | The reference quantized the accumulator with ties-to-even rounding *after* adding the zero point, while the spec rounds the quotient first — the orders disagree whenever the quotient is a half-integer and the zero point is odd (quotient 0.5 with zero point 1: spec 1, reference 2). Found by mining the merged QLinearMatMul fix (#8700) for unfixed siblings — `QLinearConv` was the one remaining op in the class | 🟢 Open · in review · CI awaiting first-time workflow approval |
 
+<a name="pipx"></a>
+
 ## <img src="https://github.com/pypa.png" width="24" alt="pipx"> pipx
 
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` and `pipx reinstall-all` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — fixes [#2422](https://github.com/pypa/pipx/issues/2422), self-found by auditing the killed-install hardening series for the command its changelog promised but never wired | ✅ Merged — approved by the maintainer within the hour |
 | [#2431 — report existing PATH entries accurately](https://github.com/pypa/pipx/pull/2431) | every repeat `pipx ensurepath` run claimed "all pipx binary directories have been appended to PATH" when nothing was appended — the directories were already in PATH, so the summary reported a change that did not happen and pointed users at `--force`; reworded to report the true state and the `--force`/`--prepend` way to re-add, with the summary checking every directory before making the claim — fixes [#2430](https://github.com/pypa/pipx/issues/2430) | ✅ Merged — lead maintainer merged with the `bug` label, 27 checks green |
+
+<a name="wheel"></a>
 
 ## <img src="https://github.com/pypa.png" width="24" alt="wheel"> wheel
 
@@ -302,6 +357,28 @@ I also review pull requests from other contributors in Apache projects. An appro
 | [#203631 — validate SGD's dampening range](https://github.com/pytorch/pytorch/issues/203631) | SGD checks `lr`, `momentum` and `weight_decay` but not `dampening`, so values outside [0, 1] are silently accepted and the momentum buffer extrapolates instead of interpolating — a buffer that swings negative or grows without bound, with no error, on both the foreach and single-tensor paths; every sibling optimizer already validates its range-bounded parameters (Adadelta's `rho`, RMSprop's `alpha`, Adagrad's `lr_decay`, ASGD's `lambd`/`alpha`) — self-found by comparing each optimizer's validators against the parameters its update math actually consumes | 🟡 Issue filed · bot-triaged · awaiting `actionable` label · PR queued behind it (PyTorch requires the label before a PR) |
 | [#203849 — inductor's index_add has the same missing shape validation](https://github.com/pytorch/pytorch/issues/203849) | The sibling decomposition in the same file skips eager's shape check too: a scalar `self` with a 1-dim `source` silently returns `7.0` where eager raises — found by probing the next op in the family while the index_reduce fix was in CI | 🟡 Issue filed · awaiting `actionable` label · PR queued behind it |
 
+<a name="cibuildwheel"></a>
+
+## <img src="https://github.com/pypa.png" width="24" alt="cibuildwheel"> cibuildwheel
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#3038 — reject unsupported bash parameter expansions in environment values](https://github.com/pypa/cibuildwheel/pull/3038) | `${VAR:-default}`-style parameter nodes in `CIBW_ENVIRONMENT` expanded silently to a wrong value instead of failing — unsupported expansions fell through and escaped-`$` words expanded at the wrong position; the evaluator now rejects non-plain-name parameters loudly with the module's standard unsupported-construct error, single-char bash specials keep legacy behavior, +2 regression tests — full unit suite 937 passed / 70 skipped / 3 xfailed, green | 🟢 Open · all 7 CI checks green · 937-test unit suite green · awaiting review |
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#3039 — environment values with an escaped dollar followed by the same variable expand at the wrong position](https://github.com/pypa/cibuildwheel/issues/3039) | `\$X$X` in one word expands to `y$X` where bash produces `$Xy` — the leftmost-occurrence `replace()` targets the part's text, not its position; filed with a bash ground-truth probe table, the root cause, and why the naive fixes (rfind) break the mirrored case | 🟡 Filed — fix directions documented |
+
+<a name="argocd"></a>
+
+## <img src="https://github.com/argoproj.png" width="24" alt="Argo"> Argo CD (CNCF)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#30892 — format float64 generator params as plain decimals for selector matching](https://github.com/argoproj/argo-cd/pull/30892) | `flattenParameters` formats generator parameter values with `fmt.Sprintf("%v", ...)`, and float64 renders via `%g` — JSON/YAML numbers ≥ 1e6 or < 1e-4 become scientific notation (`1.762e+09`), so a post-generator selector comparing `n=1762000000` silently never matches; now formatted in plain decimal notation — fixes [#30891](https://github.com/argoproj/argo-cd/issues/30891), self-found with a probe: `float64(1762000000)` → `"1.762e+09"`, selector match `false` | 🟢 Open · 43/43 checks green across two full CI cycles · CodeRabbit-clean · maintainer review points addressed same-day · awaiting approval |
+
 ---
 
 *This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
+
+**Open to internships and entry-level backend / infrastructure roles** · [GitHub profile](https://github.com/AP24110011695)
