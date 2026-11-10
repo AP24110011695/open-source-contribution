@@ -312,6 +312,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#8772 — compute BatchNormalization training and LpNormalization in float32](https://github.com/onnx/onnx/pull/8772) | Both reference implementations did their arithmetic in float16: BatchNormalization's training-mode variance squares the input and overflows the float16 range above ~256 (output_var came out as `inf` with the true value still representable, and the output collapsed to zeros), and LpNormalization's power-2 norm overflowed the same way, returning `[0, 0, 0]` instead of `[0.42, 0.57, 0.71]`. Both now compute in float32 for float16/bfloat16 inputs — the same fix the maintainers shipped for InstanceNormalization, LRN, LogSoftmax and SoftmaxCrossEntropyLoss days earlier; found by sweeping the remaining normalization/reduction ops for the class | 🟢 Open · in review |
+| [#8786 — compute LpPool in float32 for float16/bfloat16](https://github.com/onnx/onnx/pull/8786) | The pooling sibling of #8772: LpPool raised the input to the power `p` in the input dtype, so float16 windows containing values above 256 pooled to `inf` while the true L2 norms were representable. GlobalLpPool already computes in log space and needed nothing; found while sweeping the rest of the pool family | 🟢 Open · in review |
 
 <a name="onnx"></a>
 
