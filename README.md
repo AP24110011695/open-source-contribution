@@ -381,4 +381,4 @@ I also review pull requests from other contributors in Apache projects. An appro
 
 *This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
 
-**Open to internships and entry-level backend / infrastructure roles** · [GitHub profile](https://github.com/AP24110011695)
+**Open to internships and entry-level backend / infrastructure roles** · [GitHub](https://github.com/AP24110011695) · [LinkedIn](https://www.linkedin.com/in/ayush-kumar-saha-5126b6379)
