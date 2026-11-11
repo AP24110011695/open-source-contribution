@@ -2,7 +2,7 @@
 
 I find and fix real bugs in production open-source projects — by reading the code, writing the failing test first, and shipping small, reviewed changes. Everything on this page is real and linked.
 
-**10 PRs merged** · **30 projects** · **6 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
+**11 PRs merged** · **30 projects** · **6 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
 
 Languages & domains: Python · Go · Java · Rust · C/C++ · TypeScript — CLI tooling, PDF parsing, ML infrastructure, data formats, CI & packaging, monitoring, pub-sub messaging
 
@@ -24,8 +24,8 @@ Two code paths still crashed with `TypeError` on malformed PDFs — the same rob
 **[fastmcp — keep tools/list working when a root $ref resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185)**
 A valid JSON Schema (`$ref` resolving to `true`/`false`) crashed whole-server tool listing during client init. **Merged with two sibling fixes in the same batch** — URI-template variables and tag-filter ordering — four merges in one day.
 
-**[fastmcp — decode RFC 6901 escapes when extracting $defs names](https://github.com/PrefectHQ/fastmcp/pull/6180)**
-JSON-pointer-escaped schema names (`foo/bar`, `a~b`) broke schema extraction; the maintainer finalized the branch himself before merging.
+**[Zephyr RTOS — unlock interrupts on invalid pin configurations](https://github.com/zephyrproject-rtos/zephyr/pull/124927)**
+Two GPIO drivers returned `-ENOTSUP` from their configure callbacks with interrupts still locked — freezing the system on malformed pin configs. Found by scanning every `irq_lock()` error path in `drivers/` after the same freeze bug was fixed in two DMA drivers a day apart. **First contribution to the project — approved by two maintainers, merged by Anas Nashif, backport to the stable branch requested.**
 
 **[rai-toolkit (Weights & Biases) — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130)**
 `rai assess <model-ref>` answered malformed refs, missing modules and missing classes with raw Python tracebacks; now a clean input error, while a valid model's own failures keep their original traceback. **Merged after a full human review cycle** — changes requested on the exception boundary, corrected to the maintainer's spec, approved.
