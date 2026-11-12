@@ -2,7 +2,7 @@
 
 I find and fix real bugs in production open-source projects — by reading the code, writing the failing test first, and shipping small, reviewed changes. Everything on this page is real and linked.
 
-**11 PRs merged** · **30 projects** · **6 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
+**13 PRs merged** · **30 projects** · **6 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
 
 Languages & domains: Python · Go · Java · Rust · C/C++ · TypeScript — CLI tooling, PDF parsing, ML infrastructure, data formats, CI & packaging, monitoring, pub-sub messaging
 
@@ -62,6 +62,8 @@ The array ref formatter folded a per-run hash into compiled ref names, defeating
 | [#6187 — make resource templates for non-identifier path parameters readable](https://github.com/PrefectHQ/fastmcp/pull/6187) | non-identifier path parameters produced unreadable sanitized resource-template names; templated expansion now emits valid identifiers while preserving the original path parameters | fastmcp |
 | [#6185 — keep tools/list working when a root $ref resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185) | a JSON Schema root `$ref` resolving to `true`/`false` crashed `tools/list` during client init; the dereference path now handles boolean root schemas | fastmcp |
 | [#124927 — unlock interrupts on invalid pin configurations](https://github.com/zephyrproject-rtos/zephyr/pull/124927) | two GPIO drivers returned `-ENOTSUP` from their configure callbacks with interrupts still locked, freezing the system for any pin configured as both input and output or falling through the direction switch's default arm — found by scanning every `irq_lock()` error path in `drivers/` after the same freeze bug was fixed in two DMA drivers a day apart, with the remaining freeze sites fixed in the follow-ups #124926, #124961, #124962 and #125508 — the first contribution to the project, approved by two maintainers and merged by Anas Nashif | Zephyr RTOS |
+| [#4285 — handle negative-scale Decimals in increment, decrement and truncate_decimal](https://github.com/apache/iceberg-python/pull/4285) | three remaining call sites of a Decimal scale misread (`abs()` applied to the exponent) turned `1E+2` into `0.02` on increment — four orders of magnitude off; the same root cause was fixed elsewhere by #3997 and these sites were left behind — fixes [#4284](https://github.com/apache/iceberg-python/issues/4284), self-found by mining recently merged validation fixes for unfixed siblings — merged by Fokko Driesprong via the merge queue, issue closed as completed | PyIceberg |
+| [#4287 — reject non-finite floats on conversion to Decimal](https://github.com/apache/iceberg-python/pull/4287) | converting an infinity float/double literal to Decimal raised a bare `decimal.InvalidOperation` instead of the module's standard conversion error — fixes [#4286](https://github.com/apache/iceberg-python/issues/4286), self-found while auditing the conversion surfaces for unfixed siblings — approved by the lead maintainer ("Decimal can't carry Inf"), merged via the merge queue, issue closed as completed | PyIceberg |
 
 ---
 
