@@ -2,7 +2,7 @@
 
 I find and fix real bugs in production open-source projects — by reading the code, writing the failing test first, and shipping small, reviewed changes. Everything on this page is real and linked.
 
-**17 PRs merged** · **30 projects** · **6 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
+**19 PRs merged** · **31 projects** · **6 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
 
 Languages & domains: Python · Go · Java · Rust · C/C++ · TypeScript — CLI tooling, PDF parsing, ML infrastructure, data formats, CI & packaging, monitoring, pub-sub messaging
 
@@ -71,6 +71,8 @@ The array ref formatter folded a per-run hash into compiled ref names, defeating
 | [#124961 — unlock interrupts on USB error paths](https://github.com/zephyrproject-rtos/zephyr/pull/124961) | The Renesas RA UDC returned `-EIO` from endpoint-dequeue with interrupts still locked when transfer abort failed, and the SAM USBC attach returned the pinctrl error the same way — leaving the system frozen after a rejected attach. Both now unlock before returning — approved by two maintainers after the review-citation cleanup and merged by Anas Nashif | Zephyr RTOS |
 | [#4287 — reject non-finite floats on conversion to Decimal](https://github.com/apache/iceberg-python/pull/4287) | converting an infinity float/double literal to Decimal raised a bare `decimal.InvalidOperation` instead of the module's standard conversion error — fixes [#4286](https://github.com/apache/iceberg-python/issues/4286), self-found while auditing the conversion surfaces for unfixed siblings — approved by the lead maintainer ("Decimal can't carry Inf"), merged via the merge queue, issue closed as completed | PyIceberg |
 | [#4331 — order -0.0 below 0.0 in data file metrics bounds](https://github.com/apache/iceberg-python/pull/4331) | the parquet-metrics accumulator (`min(val, current)`) keeps whichever zero arrives last, so a late `-0.0` lowered an existing `+0.0` upper bound and a late `+0.0` raised an existing `-0.0` lower bound — serialized bounds ordering above a value present in the file; same class as #4324 with flipped directions (the accumulator's argument order is flipped) — proven failing-first on main, simplified per the maintainer's own argument-order round, merged via the merge queue | PyIceberg |
+| [#2446 — skip prerelease builds in the standalone-Python version index](https://github.com/pypa/pipx/pull/2446) | the version match stopped before a prerelease suffix, so all 195 `cpython-3.16.0a1` assets in the current python-build-standalone release aliased under the stable `3.16.0` key and `--fetch-python` downloaded an alpha while recording it as the final 3.16.0 — prerelease assets are now skipped, so a version with no final build fails loudly instead | pipx (PyPA) |
+| [#3528 — skip generated-file-link tests without symlinks](https://github.com/pypa/virtualenv/pull/3528) | the generated-file-links test suite created symlinks directly, so every Windows contributor without Developer Mode saw 20 failures (`WinError 1314`) no change of theirs could fix — the suite now skips via the repo's own `fs_supports_symlink` probe, as two other test files already did | virtualenv (PyPA) |
 
 ---
 
@@ -92,7 +94,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 
 ## The full log — by project
 
-**PyPA** — [pipx](#pipx) · [wheel](#wheel) · [cibuildwheel](#cibuildwheel)
+**PyPA** — [pipx](#pipx) · [wheel](#wheel) · [virtualenv](#virtualenv) · [cibuildwheel](#cibuildwheel)
 
 **Apache** — [PyIceberg](#iceberg) · [Airflow](#airflow) · [HertzBeat](#hertzbeat) · [OpenDAL](#opendal) · [Pulsar](#pulsar) · [Superset](#superset)
 
@@ -356,6 +358,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 |---|---|---|
 | [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` and `pipx reinstall-all` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — fixes [#2422](https://github.com/pypa/pipx/issues/2422), self-found by auditing the killed-install hardening series for the command its changelog promised but never wired | ✅ Merged — approved by the maintainer within the hour |
 | [#2431 — report existing PATH entries accurately](https://github.com/pypa/pipx/pull/2431) | every repeat `pipx ensurepath` run claimed "all pipx binary directories have been appended to PATH" when nothing was appended — the directories were already in PATH, so the summary reported a change that did not happen and pointed users at `--force`; reworded to report the true state and the `--force`/`--prepend` way to re-add, with the summary checking every directory before making the claim — fixes [#2430](https://github.com/pypa/pipx/issues/2430) | ✅ Merged — lead maintainer merged with the `bug` label, 27 checks green |
+| [#2446 — skip prerelease builds in the standalone-Python version index](https://github.com/pypa/pipx/pull/2446) | the version match stopped before a prerelease suffix, so all 195 `cpython-3.16.0a1` assets in the current python-build-standalone release aliased under the stable `3.16.0` key and `--fetch-python` downloaded an alpha while recording it as the final 3.16.0 — prerelease assets are now skipped, so a version with no final build fails loudly instead — fixes [#2445](https://github.com/pypa/pipx/issues/2445), found live against the release index, fail-first regression test included; the maintainer refactored the match to read the tag once at merge | ✅ Merged — maintainer refactored at merge and closed the issue as completed |
 
 <a name="wheel"></a>
 
@@ -364,6 +367,14 @@ I also review pull requests from other contributors in Apache projects. An appro
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#719 — don't leave the .dist-info directory renamed when 'wheel pack --local-version' fails](https://github.com/pypa/wheel/pull/719) | The rename to the new name-version `.dist-info` directory ran before anything else could fail, so a missing `METADATA` or `WHEEL` file, a `WHEEL` file without tags, or any write error left the unpacked directory under a name no wheel was ever produced for — everything that can fail before the rename now runs before it, and a failure after it puts the directory back — fixes [#713](https://github.com/pypa/wheel/issues/713), four regression tests each verified to fail on the unfixed code | ⚪ Withdrawn — an earlier fix ([#714](https://github.com/pypa/wheel/pull/714)) existed; closed in its favor with the guard + tests offered as a contribution there |
+
+<a name="virtualenv"></a>
+
+## <img src="https://github.com/pypa.png" width="24" alt="virtualenv"> virtualenv
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#3528 — skip generated-file-link tests without symlinks](https://github.com/pypa/virtualenv/pull/3528) | the generated-file-links test suite created symlinks directly, so every Windows contributor without Developer Mode saw 20 failures (`WinError 1314`) no change of theirs could fix — the suite now skips via the repo's own `fs_supports_symlink` probe, the idiom two other test files already used | ✅ Merged — maintainer merged main in and aligned the skip reason at merge |
 
 <a name="pytorch"></a>
 
