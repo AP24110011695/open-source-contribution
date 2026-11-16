@@ -2,7 +2,7 @@
 
 I find and fix real bugs in production open-source projects — by reading the code, writing the failing test first, and shipping small, reviewed changes. Everything on this page is real and linked.
 
-**19 PRs merged** · **31 projects** · **6 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
+**19 PRs merged** · **31 projects** · **7 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
 
 Languages & domains: Python · Go · Java · Rust · C/C++ · TypeScript — CLI tooling, PDF parsing, ML infrastructure, data formats, CI & packaging, monitoring, pub-sub messaging
 
