@@ -2,11 +2,11 @@
 
 I find and fix real bugs in production open-source projects — by reading the code, writing the failing test first, and shipping small, reviewed changes. Everything on this page is real and linked.
 
-**19 PRs merged** · **31 projects** · **7 reviews of other contributors' PRs (3 approvals)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
+**21 pull requests merged** · **31 projects** · **17 code reviews of other contributors' PRs (12 approvals — 7 of the reviewed PRs have since merged)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
 
 Languages & domains: Python · Go · Java · Rust · C/C++ · TypeScript — CLI tooling, PDF parsing, ML infrastructure, data formats, CI & packaging, monitoring, pub-sub messaging
 
-🟢 in review · 🟡 waiting on a maintainer · 🔒 gated on triage · ⚪ closed
+Status legend: ✅ merged / approved · 🟢 open, in review · 🟡 waiting on a maintainer · 🔒 closed by a triage bot, auto-reopens on signal · ⚪ closed / withdrawn
 
 ---
 
@@ -50,206 +50,109 @@ The array ref formatter folded a per-run hash into compiled ref names, defeating
 
 ---
 
-## Merged
+## Merged pull requests
 
-| Pull request | What it fixes | Project |
-|---|---|---|
-| [#677 — reject whitespace-only API key names](https://github.com/nikhilb2/simple_invoicing/pull/677) | `POST /api/api-keys/` saved a name of only spaces as an empty string; now returns 422 — merged within the hour of opening | simple_invoicing |
-| [#678 — reject blank units and unknown statuses on product update](https://github.com/nikhilb2/simple_invoicing/pull/678) | Product updates silently accepted a blank unit and any status string; now reuses the create-path unit validation and bounds status to active/inactive with 422s — merged the same day, after addressing a maintainer change request with the requested API-level test | simple_invoicing |
-| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error, while a valid model's own factory or constructor failures keep their original exception and traceback — merged after a full human review cycle: changes requested on the exception boundary, corrected to the maintainer's spec, approved | rai-toolkit (Weights & Biases) |
-| [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` and `pipx reinstall-all` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — approved by the maintainer within the hour, merged the same night | pipx (PyPA) |
-| [#2431 — report existing PATH entries accurately](https://github.com/pypa/pipx/pull/2431) | every repeat `pipx ensurepath` run claimed "all pipx binary directories have been appended to PATH" when nothing was appended — the directories were already in PATH, so the summary reported a change that did not happen and pointed users at `--force`; reworded to report the true state and the `--force`/`--prepend` way to re-add, with the summary checking every directory before making the claim — merged by the lead maintainer with the `bug` label | pipx (PyPA) |
-| [#7707 — drop the f-string Var marker from array ref names](https://github.com/reflex-dev/reflex/pull/7707) | the array ref formatter folded a per-run hash into compiled ref names, defeating reproducible builds; approved and merged by the maintainer | reflex |
-| [#4353 — guard the remaining non-dictionary /Resources accesses](https://github.com/py-pdf/pypdf/pull/4353) | two code paths still crashed with `TypeError` when a page's `/Resources` was not a dictionary — the font walk and the inline-image color-space lookup, siblings of fixes #4272/#4329; warn-and-treat-as-empty guards with regression tests covering the crash, the resolution, and the null branches — merged after the full review cycle: coverage requested and covered, five suggestions applied (two of them test-proven corrections to the suggestions themselves) | pypdf |
-| [#6214 — apply tool transforms before tag filters on single servers](https://github.com/PrefectHQ/fastmcp/pull/6214) | single-server `MCPConfig` applied include/exclude tags before the tools transform, so transform-added tags were invisible to the filter — reordered to match the composite-server path; verified with a platform-independent in-process regression test | fastmcp |
-| [#6187 — make resource templates for non-identifier path parameters readable](https://github.com/PrefectHQ/fastmcp/pull/6187) | non-identifier path parameters produced unreadable sanitized resource-template names; templated expansion now emits valid identifiers while preserving the original path parameters | fastmcp |
-| [#6185 — keep tools/list working when a root $ref resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185) | a JSON Schema root `$ref` resolving to `true`/`false` crashed `tools/list` during client init; the dereference path now handles boolean root schemas | fastmcp |
-| [#124927 — unlock interrupts on invalid pin configurations](https://github.com/zephyrproject-rtos/zephyr/pull/124927) | two GPIO drivers returned `-ENOTSUP` from their configure callbacks with interrupts still locked, freezing the system for any pin configured as both input and output or falling through the direction switch's default arm — found by scanning every `irq_lock()` error path in `drivers/` after the same freeze bug was fixed in two DMA drivers a day apart, with the remaining freeze sites fixed in the follow-ups #124926, #124961, #124962 and #125508 — the first contribution to the project, approved by two maintainers and merged by Anas Nashif | Zephyr RTOS |
-| [#4285 — handle negative-scale Decimals in increment, decrement and truncate_decimal](https://github.com/apache/iceberg-python/pull/4285) | three remaining call sites of a Decimal scale misread (`abs()` applied to the exponent) turned `1E+2` into `0.02` on increment — four orders of magnitude off; the same root cause was fixed elsewhere by #3997 and these sites were left behind — fixes [#4284](https://github.com/apache/iceberg-python/issues/4284), self-found by mining recently merged validation fixes for unfixed siblings — merged by Fokko Driesprong via the merge queue, issue closed as completed | PyIceberg |
-| [#125508 — avoid 64-bit divisions in TDK temperature conversions](https://github.com/zephyrproject-rtos/zephyr/pull/125508) | Two TDK sensor drivers divided 64-bit values by constants in their temperature math, pulling the software 64-bit division helper onto divider-less MCUs — the icm4268x decoder was the unfixed sibling of the already-reworked #124230 path. Rewritten in int32 with the reduced reciprocal, exhaustively equivalence-checked over the full input ranges — approved by two maintainers and merged by Anas Nashif | Zephyr RTOS |
-| [#124962 — unlock interrupts on grant double-free](https://github.com/zephyrproject-rtos/zephyr/pull/124962) | Xen's grant-table release path logged a warning and returned from the double-free case with interrupts still locked — a repeated release froze the system permanently. Now unlocks before returning — approved by three maintainers and merged by Anas Nashif | Zephyr RTOS |
-| [#124961 — unlock interrupts on USB error paths](https://github.com/zephyrproject-rtos/zephyr/pull/124961) | The Renesas RA UDC returned `-EIO` from endpoint-dequeue with interrupts still locked when transfer abort failed, and the SAM USBC attach returned the pinctrl error the same way — leaving the system frozen after a rejected attach. Both now unlock before returning — approved by two maintainers after the review-citation cleanup and merged by Anas Nashif | Zephyr RTOS |
-| [#4287 — reject non-finite floats on conversion to Decimal](https://github.com/apache/iceberg-python/pull/4287) | converting an infinity float/double literal to Decimal raised a bare `decimal.InvalidOperation` instead of the module's standard conversion error — fixes [#4286](https://github.com/apache/iceberg-python/issues/4286), self-found while auditing the conversion surfaces for unfixed siblings — approved by the lead maintainer ("Decimal can't carry Inf"), merged via the merge queue, issue closed as completed | PyIceberg |
-| [#4331 — order -0.0 below 0.0 in data file metrics bounds](https://github.com/apache/iceberg-python/pull/4331) | the parquet-metrics accumulator (`min(val, current)`) keeps whichever zero arrives last, so a late `-0.0` lowered an existing `+0.0` upper bound and a late `+0.0` raised an existing `-0.0` lower bound — serialized bounds ordering above a value present in the file; same class as #4324 with flipped directions (the accumulator's argument order is flipped) — proven failing-first on main, simplified per the maintainer's own argument-order round, merged via the merge queue | PyIceberg |
-| [#4412 — populate nan_value_counts when writing parquet files](https://github.com/apache/iceberg-python/pull/4412) | the parquet writer returned an empty `nan_value_counts` unconditionally — pyarrow's statistics API exposes no NaN count, so the writer now counts NaNs from the written table itself (`is_nan` sums, nulls excluded per the spec) and threads them through a new optional parameter; NaN-aware scan pruning had been silently dead for every pyiceberg-written table | 🟢 Open · in review |
-| [#2446 — skip prerelease builds in the standalone-Python version index](https://github.com/pypa/pipx/pull/2446) | the version match stopped before a prerelease suffix, so all 195 `cpython-3.16.0a1` assets in the current python-build-standalone release aliased under the stable `3.16.0` key and `--fetch-python` downloaded an alpha while recording it as the final 3.16.0 — prerelease assets are now skipped, so a version with no final build fails loudly instead | pipx (PyPA) |
-| [#3528 — skip generated-file-link tests without symlinks](https://github.com/pypa/virtualenv/pull/3528) | the generated-file-links test suite created symlinks directly, so every Windows contributor without Developer Mode saw 20 failures (`WinError 1314`) no change of theirs could fix — the suite now skips via the repo's own `fs_supports_symlink` probe, as two other test files already did | virtualenv (PyPA) |
+One row per project — every merge is a clickable link. Details for each merge are in the project sections below.
+
+| Project | Merged pull requests |
+|---|---|
+| [**simple_invoicing**](https://github.com/nikhilb2/simple_invoicing) | [#677 — reject whitespace-only API key names](https://github.com/nikhilb2/simple_invoicing/pull/677) · [#678 — reject blank units and unknown statuses on product update](https://github.com/nikhilb2/simple_invoicing/pull/678) |
+| [**rai-toolkit**](https://github.com/wandb/rai-toolkit) (Weights & Biases) | [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) |
+| [**pipx**](https://github.com/pypa/pipx) (PyPA) | [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) · [#2431 — report existing PATH entries accurately](https://github.com/pypa/pipx/pull/2431) · [#2446 — skip prerelease builds in the standalone-Python version index](https://github.com/pypa/pipx/pull/2446) |
+| [**reflex**](https://github.com/reflex-dev/reflex) | [#7707 — drop the f-string Var marker from array ref names](https://github.com/reflex-dev/reflex/pull/7707) |
+| [**fastmcp**](https://github.com/PrefectHQ/fastmcp) | [#6180 — decode RFC 6901 escapes when extracting `$defs` names](https://github.com/PrefectHQ/fastmcp/pull/6180) · [#6185 — keep tools/list working when a root $ref resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185) · [#6187 — make resource templates for non-identifier path parameters readable](https://github.com/PrefectHQ/fastmcp/pull/6187) · [#6214 — apply tool transforms before tag filters on single servers](https://github.com/PrefectHQ/fastmcp/pull/6214) |
+| [**pypdf**](https://github.com/py-pdf/pypdf) | [#4353 — guard the remaining non-dictionary /Resources accesses](https://github.com/py-pdf/pypdf/pull/4353) |
+| [**Zephyr RTOS**](https://github.com/zephyrproject-rtos/zephyr) (Linux Foundation) | [#124927 — unlock interrupts on invalid pin configurations](https://github.com/zephyrproject-rtos/zephyr/pull/124927) · [#124961 — unlock interrupts on USB error paths](https://github.com/zephyrproject-rtos/zephyr/pull/124961) · [#125508 — avoid 64-bit divisions in TDK temperature conversions](https://github.com/zephyrproject-rtos/zephyr/pull/125508) · [#124962 — unlock interrupts on grant double-free](https://github.com/zephyrproject-rtos/zephyr/pull/124962) |
+| [**PyIceberg**](https://github.com/apache/iceberg-python) (Apache) | [#4285 — handle negative-scale Decimals in increment, decrement and truncate_decimal](https://github.com/apache/iceberg-python/pull/4285) · [#4287 — reject non-finite floats on conversion to Decimal](https://github.com/apache/iceberg-python/pull/4287) · [#4331 — order -0.0 below 0.0 in data file metrics bounds](https://github.com/apache/iceberg-python/pull/4331) |
+| [**Powertools for AWS Lambda**](https://github.com/aws-powertools/powertools-lambda-python) (Python) | [#8757 — tolerate a malformed parameters cache-TTL environment variable](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) |
+| [**virtualenv**](https://github.com/pypa/virtualenv) (PyPA) | [#3528 — skip generated-file-link tests without symlinks](https://github.com/pypa/virtualenv/pull/3528) |
 
 ---
 
 ## Code reviews — other contributors' pull requests
 
-I also review pull requests from other contributors in Apache projects. An approval from me means I checked out the branch, ran the tests, and reproduced the bug being fixed on the unfixed code first.
+I also review pull requests from other contributors. An approval from me means I checked out their branch, ran the tests, and reproduced the bug being fixed on the unfixed code first — not that the diff merely looked fine.
 
 | Review | What I verified | Outcome |
 |---|---|---|
-| [#4292 — apply every delete file when rewriting files for a partial delete](https://github.com/apache/iceberg-python/pull/4292#pullrequestreview-5807190431) — PyIceberg || [#4372 — convert float literals to wide decimal columns without InvalidOperation](https://github.com/apache/iceberg-python/pull/4372) — PyIceberg | fail-first reproduced both overflow cases on main, verified the exact quantized outputs and that the infinity/NaN `ValueError` contract from our merged #4287 is preserved, plus a non-blocking note on the >38-digit bind-time boundary | ✅ Approved — fail-first reproduced locally |
- a partial delete could resurrect deleted rows when filtered reads bounds-prune delete files — confirmed the fix's rationale, ran the new test across three catalog fixtures, reproduced the exact deleted-rows-returning failure on the unfixed code, and ran the 721-test behavior regression slice | ✅ Merged — maintainer-approved after our fail-first approval and follow-up verification of the simplification round |
-| [#4529 — fail MonitorServiceTest if nothing throws](https://github.com/apache/hertzbeat/pull/4529#pullrequestreview-5805159800) — HertzBeat | read all 11 try/catch → assertThrows conversions, ran the test module locally (71/71 green), then did an independent mutation check: commenting out a real throw in the service made the new test fail — proving the old pattern would have passed silently | ✅ Approved — 71/71 green locally + mutation check |
-| [#4296 — read a file without avro.codec as uncompressed](https://github.com/apache/iceberg-python/pull/4296#pullrequestreview-5804767229) — PyIceberg | ran the new codec tests on the branch and reproduced the pre-fix failure (`Unsupported codec: gzip`) on the old code, then mapped every config-fallback site the one-line change touches | ✅ Approved — fail-first reproduced locally |
-| [#4289 — skip unknown nested fields when resolving Avro read schemas](https://github.com/apache/iceberg-python/pull/4289#pullrequestreview-5790634073) — PyIceberg | ran the PR's own test locally and probed all four type-mismatch guarantees (map-vs-string, list-vs-map, top-level and field-level) still raise | ✅ Merged — maintainer approved after our suggested direction was confirmed |
+| [#4289 — skip unknown nested fields when resolving Avro read schemas](https://github.com/apache/iceberg-python/pull/4289#pullrequestreview-5790634073) — PyIceberg | ran the PR's own test locally and probed all four type-mismatch guarantees (map-vs-string, list-vs-map, top-level and field-level) still raise | ✅ Approved — [merged](https://github.com/apache/iceberg-python/pull/4289) |
+| [#4296 — read a file without avro.codec as uncompressed](https://github.com/apache/iceberg-python/pull/4296#pullrequestreview-5804767229) — PyIceberg | ran the new codec tests on the branch and reproduced the pre-fix failure (`Unsupported codec: gzip`) on the old code, then mapped every config-fallback site the one-line change touches | ✅ Approved — [merged](https://github.com/apache/iceberg-python/pull/4296) |
+| [#4292 — apply every delete file when rewriting files for a partial delete](https://github.com/apache/iceberg-python/pull/4292#pullrequestreview-5807190431) — PyIceberg | a partial delete could resurrect deleted rows when filtered reads bounds-prune delete files — confirmed the fix's rationale, ran the new test across three catalog fixtures, reproduced the exact deleted-rows-returning failure on the unfixed code, and ran the 721-test behavior regression slice | ✅ Approved — [merged](https://github.com/apache/iceberg-python/pull/4292) |
+| [#4333 — retry appends on catalogs that only expose the current snapshot](https://github.com/apache/iceberg-python/pull/4333#pullrequestreview-5850663772) — PyIceberg | traced the retry-guard class structure (the only new `base=None` case is intercepted before use), ran the full commit-retry suite (129 passed on branch), fail-first: 9 failed on main | ✅ Approved |
+| [#4347 — check add_files duplicates against the target branch](https://github.com/apache/iceberg-python/pull/4347#pullrequestreview-5865010567) — PyIceberg | verified the dedup logic (snapshots by id, manifests by path, `snapshot_by_name(None)` safe), 12 passed on branch, fail-first: the 2 rejection tests failed on main | ✅ Approved |
+| [#4529 — fail MonitorServiceTest if nothing throws](https://github.com/apache/hertzbeat/pull/4529#pullrequestreview-5805159800) — HertzBeat | read all 11 try/catch → assertThrows conversions, ran the test module locally (71/71 green), then did an independent mutation check: commenting out a real throw in the service made the new test fail — proving the old pattern would have passed silently | ✅ Approved |
 | [#4526 — add the missing SSL parameter to HDFS NameNode/DataNode/YARN](https://github.com/apache/hertzbeat/pull/4526#pullrequestreview-5790679437) — HertzBeat | traced the diagnosis end-to-end (the placeholder survives substitution, so `Boolean.parseBoolean` always answers false), then scope-checked it: grepped all 40 templates using the SSL placeholder — the PR's 3 files are the complete set | 💬 Commented — confirmed the scope is complete |
 | [#76629 — DAG-level on_failure_callback dropped on detached session errors](https://github.com/apache/airflow/pull/76629#pullrequestreview-5807222864) — Airflow | verified the exception-catch hierarchy statically (`PendingRollbackError`/`InvalidRequestError` both escape the `DetachedInstanceError`-only catch) and flagged a sibling path pruning entries the same way | 💬 Commented — same-class sibling flagged |
+| [#2448 — preserve lock files through interrupts](https://github.com/pypa/pipx/pull/2448#pullrequestreview-5882404801) — pipx | verified the SIGINT/SIGTERM deferral semantics (backups survive rollback, deferred interrupt still reported), ran all 6 new tests, fail-first: 3 of 4 parametrized cases fail on main's source | ✅ Approved — [merged](https://github.com/pypa/pipx/pull/2448) |
+| [#2450 — docs: what `environment --value` prints for unset variables](https://github.com/pypa/pipx/pull/2450#pullrequestreview-5865107238) — pipx | verified all four docs claims — the derived-vs-raw split against the source, ran `--value PIPX_GLOBAL_BIN_DIR` and `PIPX_HOME` live, and code-read the `--global` path | ✅ Approved — [merged](https://github.com/pypa/pipx/pull/2450) |
+| [#2453 — resume Python downloads cut short of Content-Length](https://github.com/pypa/pipx/pull/2453#issuecomment-6836962614) — pipx | verified against main's resume loop: the length-shortfall raise covers silent short-reads, `IncompleteRead` routes through the transient retry + disk-resume, the post-assembly checksum makes wrong-resume impossible | 💬 Verified — support posted, [merged](https://github.com/pypa/pipx/pull/2453) |
+| [#2462 — write pipx_shared.pth in the encoding the venv's Python reads](https://github.com/pypa/pipx/pull/2462#pullrequestreview-5928788452) — pipx | PEP-686 encoding mismatch — verified write side uses `locale.getencoding()` with a UTF-8 fallback, read side matches 3.12+ precedence, all call sites wired, 5 tests pass on branch | ✅ Approved — [merged](https://github.com/pypa/pipx/pull/2462) |
+| [#3041 — expand variables at their own position in environment values](https://github.com/pypa/cibuildwheel/pull/3041#pullrequestreview-5865203063) — cibuildwheel | environment tests 18 passed + full unit suite 942 passed, fail-first: the 3 new tests fail with main's source swapped in — also fixes our filed [#3039](https://github.com/pypa/cibuildwheel/issues/3039) | 💬 Commented — fail-first verified (repo refuses APPROVE events from outside collaborators) |
+| [#3042 — read environment assignments on every line](https://github.com/pypa/cibuildwheel/pull/3042#pullrequestreview-5882294947) — cibuildwheel | multi-line `CIBW_ENVIRONMENT` blocks dropped every line after the first — verified the parse guard, ran the full suite (936 passed), fail-first on main; raised the comment-handling question | 💬 Commented — fail-first verified (same repo policy) |
+| [#3543 — correct marginal densities and entropy constant in batch MC JES](https://github.com/meta-pytorch/botorch/pull/3543#pullrequestreview-5897103393) — BoTorch | math-verified both bugs (missing entropy constant copies, joint density broadcast into marginal terms); new additivity regression passes on branch and fails on main with abs error 2.6165 | ✅ Approved |
+| [#3546 — compute Gaussian mixture variance from centered means](https://github.com/meta-pytorch/botorch/pull/3546#pullrequestreview-5897205288) — BoTorch | catastrophic-cancellation fix (`E[X²]−E[X]²` → `var(correction=0)`): float32 subtests fail on main, pass on branch — exactly the claimed pattern | ✅ Approved |
+| [#3563 — fix dtype and batch shape of out-of-bounds TruncatedMultivariateNormal.log_prob](https://github.com/meta-pytorch/botorch/pull/3563#pullrequestreview-5928722679) — BoTorch | the early return built a default-float32 tensor and dropped the candidate dim — full probability file 5 passed on branch, fails on main with the exact dtype-mismatch assertion | ✅ Approved |
 
 ---
 
 ## The full log — by project
 
-**PyPA** — [pipx](#pipx) · [wheel](#wheel) · [virtualenv](#virtualenv) · [cibuildwheel](#cibuildwheel)
+**PyPA** — [cibuildwheel](#cibuildwheel) · [pipx](#pipx) · [virtualenv](#virtualenv) · [wheel](#wheel)
 
-**Apache** — [PyIceberg](#iceberg) · [Airflow](#airflow) · [HertzBeat](#hertzbeat) · [OpenDAL](#opendal) · [Pulsar](#pulsar) · [Superset](#superset)
+**Apache** — [Airflow](#airflow) · [HertzBeat](#hertzbeat) · [OpenDAL](#opendal) · [PyIceberg](#iceberg) · [Pulsar](#pulsar) · [Superset](#superset)
 
-**CNCF** — [Dapr](#dapr) · [Argo CD](#argocd)
+**CNCF** — [Argo CD](#argocd) · [Dapr](#dapr)
 
-**Linux Foundation** — [Zephyr RTOS](#zephyr) · [osquery](#osquery) · [ONNX](#onnx) · [ONNX precision](#onnx-fp32)
+**Linux Foundation** — [ONNX](#onnx) · [osquery](#osquery) · [Zephyr RTOS](#zephyr)
 
-**Meta** — [PyTorch](#pytorch-core) · [BoTorch](#botorch)
+**Meta** — [BoTorch](#botorch) · [PyTorch](#pytorch)
 
-**More** — [crewAI](#crewai) · [fastmcp](#fastmcp) · [layer5](#layer5) · [mem0](#mem0) · [reflex](#reflex) · [agno](#agno) · [ollama-python](#ollama) · [Powertools for AWS](#powertools) · [Actual Budget](#actual) · [ECMWF WeatherGenerator](#weathergen) · [pypdf](#pypdf) · [NiceGUI](#nicegui)
+**More** — [Actual Budget](#actual) · [agno](#agno) · [crewAI](#crewai) · [ECMWF WeatherGenerator](#weathergen) · [fastmcp](#fastmcp) · [layer5](#layer5) · [mem0](#mem0) · [NiceGUI](#nicegui) · [ollama-python](#ollama) · [pypdf](#pypdf) · [Powertools for AWS](#powertools) · [rai-toolkit](#rai-toolkit) · [reflex](#reflex) · [simple_invoicing](#simple-invoicing)
 
 ---
 
-<a name="crewai"></a>
+<a name="cibuildwheel"></a>
 
-## <img src="https://github.com/crewAIInc.png" width="24" alt="crewAI"> crewAI
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#8845 — store sqlite checkpoint data as plain text](https://github.com/crewAIInc/crewAI/pull/8845) | Checkpoint writes crash on SQLite < 3.45 (`no such function: jsonb`) — fixes [#8843](https://github.com/crewAIInc/crewAI/issues/8843) | 🟢 Open · CI green · in review |
-| [#8848 — publish JSON checkpoints atomically](https://github.com/crewAIInc/crewAI/pull/8848) | Interrupted writes left truncated/corrupt checkpoint files — fixes [#8846](https://github.com/crewAIInc/crewAI/issues/8846) | 🟢 Open · CI green · in review |
-| [#8849 — tolerate malformed tool-call arguments in history replay](https://github.com/crewAIInc/crewAI/pull/8849) | Uncaught `JSONDecodeError` crash replaying Anthropic/Bedrock conversations — fixes [#8847](https://github.com/crewAIInc/crewAI/issues/8847) | 🟢 Open · CI green · in review |
-
-<a name="fastmcp"></a>
-
-## <img src="https://github.com/PrefectHQ.png" width="24" alt="fastmcp"> fastmcp
+## <img src="https://github.com/pypa.png" width="24" alt="cibuildwheel"> cibuildwheel (PyPA)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#6180 — decode RFC 6901 escapes when extracting `$defs` names](https://github.com/PrefectHQ/fastmcp/pull/6180) | JSON-pointer-escaped schema names broke schema extraction — fixes [#6034](https://github.com/PrefectHQ/fastmcp/issues/6034) | ✅ Merged — maintainer finalized the branch himself before merging |
-| [#6440 — compare pinned tool versions PEP 440-normalized against the listed version](https://github.com/PrefectHQ/fastmcp/pull/6440) | calling a versioned tool by an equivalent version spelling (`"1"` for a listed `"1.0"`, `"v1.0"`) ran the listed tool but silently skipped output-schema hydration and result revalidation, because the client compared versions as strings while the server matches PEP 440-normalized — fixes [#6439](https://github.com/PrefectHQ/fastmcp/issues/6439) | 🔒 Gated by the require-issue-link bot until the issue is assigned |
-| [#6185 — keep `tools/list` working when a root `$ref` resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185) | Whole-server tools listing crashed on valid schemas — fixes [#6125](https://github.com/PrefectHQ/fastmcp/issues/6125) | ✅ Merged |
-| [#6187 — support non-identifier variables in URI templates](https://github.com/PrefectHQ/fastmcp/pull/6187) | `{$top}`-style template variables never matched or forwarded; Unicode word characters that identifiers reject also disabled templates | ✅ Merged |
-| [#6188 — keep result hydration faithful for union coercions](https://github.com/PrefectHQ/fastmcp/pull/6188) | `0 → False`-style coercions silently replaced typed results; final guard also preserves schema-intended `format: json` decodes and rejects precision-losing timestamp truncation | 🟡 Open · survived three adversarial review rounds with same-session fixes · awaiting human review |
-| [#6214 — apply tool transforms before tag filters on single servers](https://github.com/PrefectHQ/fastmcp/pull/6214) | Tags added by a server's `tools` config were invisible to `include_tags`/`exclude_tags` on single-server MCPConfigs — fixes [#6196](https://github.com/PrefectHQ/fastmcp/issues/6196) | ✅ Merged |
-
-<a name="layer5"></a>
-
-## <img src="https://github.com/layer5io.png" width="24" alt="layer5"> layer5
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#8277 — case-study banner fits its container on mobile](https://github.com/layer5io/layer5/pull/8277) | Logo/graphic overflowed on small viewports — fixes [#8272](https://github.com/layer5io/layer5/issues/8272) | 🟢 Reviewed "no changes needed" · awaiting merge |
-| [#8278 — pricing cards reference real tier names](https://github.com/layer5io/layer5/pull/8278) | Bylines named tiers that don't exist ("Free", "Team") — fixes [#8258](https://github.com/layer5io/layer5/issues/8258) | 🟢 Reviewed "no changes needed" · awaiting merge |
-| [#8279 — Sistent icons docs: valid imports, preview matches snippet](https://github.com/layer5io/layer5/pull/8279) | Docs snippet imported non-existent exports; preview didn't match the code — fixes [#8257](https://github.com/layer5io/layer5/issues/8257) | ⚪ Reviewed "no changes needed" · closed in favor of the maintainer-assigned [#8291](https://github.com/layer5io/layer5/pull/8291), which merged |
-| [#8280 — Heading 1 design token stays in viewport on mobile](https://github.com/layer5io/layer5/pull/8280) | 6rem default heading overflowed phones — fixes [#8267](https://github.com/layer5io/layer5/issues/8267) | 🟢 Reviewed "no changes needed" · awaiting merge |
-| [#8281 — carousel arrows visible and clickable on mobile](https://github.com/layer5io/layer5/pull/8281) | Arrows flickered, clipped off-screen at ≤ 850px — fixes [#8275](https://github.com/layer5io/layer5/issues/8275) | 🟢 Reviewed "no changes needed" · awaiting merge |
-
-<a name="mem0"></a>
-
-## <img src="https://github.com/mem0ai.png" width="24" alt="mem0"> mem0
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#7795 — close owned pgvector connection pools on `Memory.close()`](https://github.com/mem0ai/mem0/pull/7795) | Long-running hosts ran out of Postgres connections; now self-contained: `PGVector.close()` + ownership tracking + the `Memory.close()` wiring + a live-server regression test — fixes [#7771](https://github.com/mem0ai/mem0/issues/7771). Verified in production by the issue reporter | 🔒 Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
-| [#7797 — apply every operator on multi-operator Qdrant filters (TS SDK)](https://github.com/mem0ai/mem0/pull/7797) | `ne`/`nin` merged into one clause; `AND` branches overwrote each other — fixes [#7762](https://github.com/mem0ai/mem0/issues/7762) | 🔒 Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
-| [#7808 — honor explicitly configured default user_id in the Hermes plugin](https://github.com/mem0ai/mem0/pull/7808) | Placeholder-collapse made an explicitly chosen default pool unreachable; gateway-native ids stranded memories — fixes [#7799](https://github.com/mem0ai/mem0/issues/7799) | 🔒 Gated pending maintainer triage (auto-reopens when the issue is labeled `accepted`) |
-
-<a name="reflex"></a>
-
-## <img src="https://github.com/reflex-dev.png" width="24" alt="reflex"> reflex
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#7701 — keep literal `reflex.Var` tag text from hanging or corrupting string vars](https://github.com/reflex-dev/reflex/pull/7701) | Any string prop containing literal `<reflex.Var>…</reflex.Var>` text hung the compiler in an infinite loop, crashed with `KeyError`/`IndexError`, or silently lost the text in rendered output | 🟡 Open · passed two rounds of automated review · awaiting human review |
-| [#7703 — `rx.asset(shared=True)` crash on Windows without Developer Mode](https://github.com/reflex-dev/reflex/pull/7703) | Symlink creation denied → whole app failed to compile; fix falls back to hardlink, then to a writable copy, keeping later compiles replaceable | 🟡 Open · passed three rounds of automated review · awaiting human review |
-| [#7704 — remove unused `path_ops.ln`](https://github.com/reflex-dev/reflex/pull/7704) | The public path helper did the exact opposite of `ln -s` semantics; the maintainer, on review, preferred removing it once the zero-callers search was confirmed — the PR was converted to the removal with a breaking-change changelog note | 🟡 Open · converted to removal on the maintainer's review · awaiting merge |
-| [#7707 — drop the f-string Var marker from array ref names](https://github.com/reflex-dev/reflex/pull/7707) | The array ref formatter folded a per-run hash into compiled ref names, defeating reproducible builds — follow-up to #7691 | ✅ Merged by the maintainer |
+| [#3038 — reject unsupported bash parameter expansions in environment values](https://github.com/pypa/cibuildwheel/pull/3038) | `${VAR:-default}`-style parameter nodes in `CIBW_ENVIRONMENT` expanded silently to a wrong value instead of failing — unsupported expansions fell through and escaped-`$` words expanded at the wrong position; the evaluator now rejects non-plain-name parameters loudly (single-char bash specials keep legacy behavior) | 🟢 Open · all CI green on the single squashed commit · two review rounds addressed (Unicode guard validates every length, `__lazy_modules__` registration) · 940-test suite green |
+| [#3043 — reject unknown option names in overrides sections](https://github.com/pypa/cibuildwheel/pull/3043) | unknown keys under an `overrides` section were silently ignored (the global `--platform` path validates, the overrides path never did); scope deliberately limited to known-name validation — enforcing the docs' disallowed-options rules would be a behavior change, flagged for maintainers | 🟢 Open · maintainer-endorsed approach + both hardening asks adopted · awaiting re-review on the clean single-commit head |
+| [#3044 — raise a clean error for empty build-frontend and container-engine values](https://github.com/pypa/cibuildwheel/pull/3044) | an empty `build-frontend`/`container-engine` config value crashed with a raw KeyError/AttributeError deep in the evaluator instead of the module's standard unsupported-construct error — both `from_config_string` sites now raise a named ValueError that the callers' existing wrappers turn into clean ConfigurationErrors | 🟢 Open · maintainer: "the specific changes look good" · awaiting re-review on the clean single-commit head |
+| [#3049 — map unknown host machines to the graceful no-native-arch path](https://github.com/pypa/cibuildwheel/pull/3049) | `native_arch` crashed with a raw ValueError on unknown host machines (e.g. loongarch64) instead of returning the designed None → clean nothing-to-build handling; pyodide always returns wasm32 regardless of host, ios compares the raw machine string | 🟢 Open · community reviewer's regression finding fixed (host-independent paths can't touch the host machine) · maintainer: "the specific changes look good" · awaiting re-review |
 
 | Bug report | What it documents | Status |
 |---|---|---|
-| [#7705 — hardlink/copy fallback assets aren't cleaned up when sources vanish](https://github.com/reflex-dev/reflex/issues/7705) | Design question with three solution options; tracked in the project's internal backlog (ENG-13670) | 🟡 Awaiting maintainer decision |
+| [#3039 — environment values with an escaped dollar followed by the same variable expand at the wrong position](https://github.com/pypa/cibuildwheel/issues/3039) | `\$X$X` in one word expands to `y$X` where bash produces `$Xy` — the leftmost-occurrence `replace()` targets the part's text, not its position; filed with a bash ground-truth probe table | 🟡 Filed — fix direction implemented by community PR [#3041](https://github.com/pypa/cibuildwheel/pull/3041), reviewed by us |
+| [#3046 — overrides silently ignore global-only options](https://github.com/pypa/cibuildwheel/issues/3046) | `build`/`skip`/`test-skip`/`enable` under an overrides section are accepted and never applied — the docs promise they "cannot be set in an overrides section" but nothing enforces it | 🟡 Filed — awaiting maintainer decision (enforcement = behavior change) |
+| [#3048 — unknown host machine crashes native_arch with a raw ValueError](https://github.com/pypa/cibuildwheel/issues/3048) | hosts like loongarch64 hit an unhandled machine string — filed with the crash trace; the graceful-mapping fix is our open [#3049](https://github.com/pypa/cibuildwheel/pull/3049) | 🟡 Filed — fix open as #3049 |
 
-<a name="agno"></a>
+<a name="pipx"></a>
 
-## <img src="https://github.com/agno-agi.png" width="24" alt="agno"> agno
-
-| Bug report | What it documents | Status |
-|---|---|---|
-| [#11414 — `LinearTools.update_issue` rejects its own documented call](https://github.com/agno-agi/agno/issues/11414) | GraphQL `$title: String!` non-null variable bound to `None` — the documented "title unchanged" call always fails; state updates advertised but impossible | 🟡 Reported · community contributor implementing; our fix + 6 tests staged |
-| [#11415 — `custom_scrape_website` returns field names instead of scraped data](https://github.com/agno-agi/agno/issues/11415) | Dict-key iteration returned the query's schema instead of the page content; also repaired the module's broken test fixtures and revived a maintainer-skipped test | 🟡 Reported · community contributor implementing; our fix + tests staged |
-| [#11421 — toolkit HTTP calls without a timeout can hang the agent thread](https://github.com/agno-agi/agno/issues/11421) | `requests` call sites in 2 toolkits (ModelsLab, Linear) wait forever on a degraded upstream — scope corrected after a community fact-check confirmed Bright Data/Serply were already fixed | 🟡 Reported · handed to a community contributor with the corrected scope |
-
-<a name="ollama"></a>
-
-## <img src="https://github.com/ollama.png" width="24" alt="ollama-python"> ollama-python
+## <img src="https://github.com/pypa.png" width="24" alt="pipx"> pipx (PyPA)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#784 — skip blank lines in streaming NDJSON responses](https://github.com/ollama/ollama-python/pull/784) | A blank line anywhere in a streamed body (proxies, compatible servers re-chunking responses) crashed `generate(stream=True)` / `chat(stream=True)` with a raw `JSONDecodeError` | 🟡 Open · awaiting review |
-| [#785 — union tool parameter types serialize as a JSON Schema type array](https://github.com/ollama/ollama-python/pull/785) | Union parameter types produced an invalid comma-joined `type` (`"string, integer"`), nondeterministically ordered | 🟡 Open · awaiting review |
-| [#786 — `Message.get` aligned with `__contains__` semantics](https://github.com/ollama/ollama-python/pull/786) | Declared-but-unset fields returned `None` instead of the caller's default, and non-field names leaked through `.get()` | 🟡 Open · awaiting review |
-| [#788 — `ResponseError` survives non-object JSON error bodies](https://github.com/ollama/ollama-python/pull/788) | A gateway/proxy error body of `null`, `[]`, or a bare JSON string crashed error construction with `AttributeError`, masking the real HTTP failure | 🟡 Open · awaiting review |
+| [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — fixes [#2422](https://github.com/pypa/pipx/issues/2422), self-found by auditing the killed-install hardening series for the command its changelog promised but never wired | ✅ Merged — approved by the maintainer within the hour |
+| [#2431 — report existing PATH entries accurately](https://github.com/pypa/pipx/pull/2431) | every repeat `pipx ensurepath` run claimed "all pipx binary directories have been appended to PATH" when nothing was appended — the directories were already in PATH, so the summary reported a change that did not happen and pointed users at `--force`; reworded to report the true state, with the summary checking every directory before making the claim — fixes [#2430](https://github.com/pypa/pipx/issues/2430) | ✅ Merged — lead maintainer merged with the `bug` label, 27 checks green |
+| [#2446 — skip prerelease builds in the standalone-Python version index](https://github.com/pypa/pipx/pull/2446) | the version match stopped before a prerelease suffix, so all 195 `cpython-3.16.0a1` assets in the current python-build-standalone release aliased under the stable `3.16.0` key and `--fetch-python` downloaded an alpha while recording it as the final 3.16.0 — prerelease assets are now skipped, so a version with no final build fails loudly instead — fixes [#2445](https://github.com/pypa/pipx/issues/2445), found live against the release index, fail-first regression test included | ✅ Merged — maintainer refactored the match to read the tag once at merge, closed the issue as completed |
 
-| Bug report | What it documents | Status |
-|---|---|---|
-| [#787 — `Tool.model_dump()` leaks the `defs` field name instead of `$defs`](https://github.com/ollama/ollama-python/issues/787) | Verified serialization asymmetry between direct dumps and request-path dumps; two fix options documented for maintainers | 🟡 Awaiting maintainer decision — PR offered |
+<a name="virtualenv"></a>
 
-<a name="powertools"></a>
-
-## <img src="https://github.com/aws-powertools.png" width="24" alt="Powertools"> Powertools for AWS Lambda (Python)
+## <img src="https://github.com/pypa.png" width="24" alt="virtualenv"> virtualenv (PyPA)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#8757 — ignore malformed `POWERTOOLS_PARAMETERS_MAX_AGE` instead of crashing](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) | An empty or non-integer cache-TTL environment variable raised a raw `ValueError` from all 12 Parameters/Secrets/AppConfig entry points before any AWS call; now warns and falls back to the documented default per the project's compatibility ADR — fixes [#8747](https://github.com/aws-powertools/powertools-lambda-python/issues/8747) | ✅ Merged — maintainer ran the whole parameters suite on develop before approving; ships in the 3.41.0 release notes |
+| [#3528 — skip generated-file-link tests without symlinks](https://github.com/pypa/virtualenv/pull/3528) | the generated-file-links test suite created symlinks directly, so every Windows contributor without Developer Mode saw 20 failures (`WinError 1314`) no change of theirs could fix — the suite now skips via the repo's own `fs_supports_symlink` probe, the idiom two other test files already used | ✅ Merged — maintainer merged main in and aligned the skip reason at merge |
 
-<a name="actual"></a>
+<a name="wheel"></a>
 
-## <img src="https://github.com/actualbudget.png" width="24" alt="Actual Budget"> Actual Budget
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#9416 — reject amounts too large for safe arithmetic on import](https://github.com/actualbudget/actual/pull/9416) | Importing a CSV whose amount overflows the safe-integer range crashed the transaction list on render; the import preview now rejects such rows like other unparseable fields — fixes [#9415](https://github.com/actualbudget/actual/issues/9415) | 🟢 Open · all CI green · every review thread resolved · in review |
-| [#125797 — reset the MQTT disconnect reason between sessions](https://github.com/zephyrproject-rtos/zephyr/pull/125797) | The decoder sets `internal.disconnect_reason` on processing errors (topic alias invalid, implementation specific error) and `disconnect_5_0_notify()` prefers it over the errno mapping, but nothing ever clears it — after a reconnect on the same client instance the next error sent the previous session's reason. Now cleared in `client_reset()` (which runs after each DISCONNECT is sent), with a two-connection regression test: topic-alias violation gives 0x94 on the first DISCONNECT, the fresh session's own error gives 0x82 instead of leaking 0x94 — fixes [#125792](https://github.com/zephyrproject-rtos/zephyr/issues/125792) | 🟢 Open · **approved by jukkar + rlubos** · awaiting merge |
-| [#126044 — avoid 64-bit divisions in sensor sample conversion](https://github.com/zephyrproject-rtos/zephyr/pull/126044) | The rm3100 magnetometer decoder divided a 64-bit value twice per sample (by the cycle-count divider, then by 100) and the icm20689 temperature conversion divided a 64-bit product by 3268 — both pulled the software 64-bit division helper onto divider-less cores on every conversion, the same class as the merged #125508. Both now run in int32 arithmetic (divisor powers of two folded into the shift, divisions composed and split into whole/remainder parts), with equivalence proven exhaustively over the full input ranges — fixes [#126043](https://github.com/zephyrproject-rtos/zephyr/issues/126043) | 🟢 Open · **approved by afontaine-invn** · awaiting maintainer merge |
-| [#9322 — guard the prometheus_targets config against malformed values](https://github.com/osquery/osquery/pull/9322) | The prometheus_metrics table read the `prometheus_targets` config section without validating its type — the config parser plugin copies the value verbatim and the table then called rapidjson `HasMember()`/`GetArray()`/`GetUint64()` on whatever shape it found, so a config value that is not an object fired rapidjson's `IsObject()` assertion (abort in debug builds, undefined behavior in release, since osquery does not override `RAPIDJSON_ASSERT`). The config value is user-controlled, so a typo broke the whole table. Every level is now validated with the file's `LOG(WARNING)` + graceful-return pattern, the logic moved into a testable `parsePrometheusTargetsConfig()` helper, and unit tests cover malformed and valid configurations — fixes [#9321](https://github.com/osquery/osquery/issues/9321) | 🟢 Open · CI running |
-| [#125909 — clear MQTT topic alias mappings on connection reset](https://github.com/zephyrproject-rtos/zephyr/pull/125909) | The decoder learns broker topic aliases into the client instance and resolves alias-only PUBLISHes against that table, but nothing ever clears it — after a reconnect on the same client instance an alias-only PUBLISH silently resolved against the previous session's topics (MQTT 5.0 §3.3.4 limits alias mappings to one connection). Now cleared in `client_reset()` with a two-connection regression test: alias 1 taught on connection 1, then an alias-only PUBLISH must return `-EBADMSG` instead of resolving the stale topic — fixes [#125908](https://github.com/zephyrproject-rtos/zephyr/issues/125908) | 🟢 Open · **approved by jukkar + rlubos** · optional nit applied · awaiting merge |
-| [#9419 — return focus to the input after picking a calendar day](https://github.com/actualbudget/actual/pull/9419) | Picking a date in the calendar dropped keyboard focus, forcing mouse-only transaction entry — fixes [#9370](https://github.com/actualbudget/actual/issues/9370) | 🟢 Open · in review |
-
-<a name="weathergen"></a>
-
-## <img src="https://github.com/ecmwf.png" width="24" alt="ECMWF"> ECMWF WeatherGenerator
+## <img src="https://github.com/pypa.png" width="24" alt="wheel"> wheel (PyPA)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#3028 — TrainLogger takes run_id and results path instead of the global config](https://github.com/ecmwf/WeatherGenerator/pull/3028) | The training logger held the entire global config object but only ever read the run id from it — now it takes the two parameters it needs and can be used standalone — fixes the remaining scope of [#1213](https://github.com/ecmwf/WeatherGenerator/issues/1213) | 🟢 Open · CI green · in review |
-| [#3030 — fix legacy metrics lookup level](https://github.com/ecmwf/WeatherGenerator/pull/3030) | The metrics-file backwards-compatibility branch probed a path no released version ever wrote, so reading any pre-rename run crashed with `FileNotFoundError` instead of using the compat file — fixes [#3029](https://github.com/ecmwf/WeatherGenerator/issues/3029), a self-found bug traced through the #601/#1831 history | 🟢 Open · CI green · in review |
-| [#3032 — fix bare-path config entries in compare_run_configs](https://github.com/ecmwf/WeatherGenerator/pull/3032) | The config-comparison tool's bare-path format crashed with a doubled directory path ever since a config-loader fix changed `model_path` semantics — fixes [#3031](https://github.com/ecmwf/WeatherGenerator/issues/3031), self-found and reproduced end-to-end before filing | 🟢 Open · in review |
-
-<a name="pypdf"></a>
-
-## <img src="https://github.com/py-pdf.png" width="24" alt="pypdf"> pypdf
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#4353 — guard the remaining non-dictionary /Resources accesses](https://github.com/py-pdf/pypdf/pull/4353) | Two code paths (font listing and inline-image color-space lookup) still crashed with `TypeError` when `/Resources` was not a dictionary — the same robustness class fixed twice elsewhere in the codebase — fixes [#4352](https://github.com/py-pdf/pypdf/issues/4352), a self-found bug located by mining that repeated fix pattern | ✅ Merged — after the full review cycle: coverage requested and covered, five maintainer suggestions applied (two test-proven corrections to the suggestions themselves) |
-
-<a name="nicegui"></a>
-
-## <img src="https://github.com/zauberzeug.png" width="24" alt="NiceGUI"> NiceGUI
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#6468 — fix missing Torus export from the scene objects package](https://github.com/zauberzeug/nicegui/pull/6468) | `Torus` shipped in 3.19.0 with a scene method but the objects package forgot the import and `__all__` entry, so the documented import path raised `ImportError` | ⚪ Closed — same fix already open as [#6461](https://github.com/zauberzeug/nicegui/pull/6461) by the issue reporter and scheduled for 4.1 |
-
-<a name="iceberg"></a>
-
-## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache Iceberg (PyIceberg)
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#4285 — handle negative-scale Decimals in increment, decrement and truncate_decimal](https://github.com/apache/iceberg-python/pull/4285) | Three remaining call sites of a `Decimal` scale misread (`abs()` applied to the exponent) turned `1E+2` into `0.02` on increment — four orders of magnitude off; the same root cause was fixed elsewhere by #3997 — fixes [#4284](https://github.com/apache/iceberg-python/issues/4284), self-found by mining recently merged validation fixes for unfixed siblings | ✅ Merged by Fokko Driesprong — closed #4284 as completed |
-| [#4287 — reject non-finite floats on conversion to Decimal](https://github.com/apache/iceberg-python/pull/4287) | An infinity float/double literal crashed `to(DecimalType)` with a bare `decimal.InvalidOperation` instead of the module's standard conversion error — fixes [#4286](https://github.com/apache/iceberg-python/issues/4286), self-found while auditing the conversion surfaces for unfixed siblings | ✅ Merged by Fokko Driesprong — closed #4286 as completed |
-| [#4331 — order -0.0 below 0.0 in data file metrics bounds](https://github.com/apache/iceberg-python/pull/4331) | the parquet-metrics accumulator (`min(val, current)`) keeps whichever zero arrives last, so a late `-0.0` lowers an existing `+0.0` upper bound and a late `+0.0` raises an existing `-0.0` lower bound — the serialized bounds then order above a value present in the file; same class as the freshly merged #4324, flipped directions because the accumulator's argument order is flipped — proven failing-first on main for both arrival orders | ✅ Merged by Fokko Driesprong after his argument-order simplification round |
+| [#719 — don't leave the .dist-info directory renamed when 'wheel pack --local-version' fails](https://github.com/pypa/wheel/pull/719) | the rename to the new name-version `.dist-info` directory ran before anything else could fail, so a missing `METADATA` or `WHEEL` file, or any write error, left the unpacked directory under a name no wheel was ever produced for — everything that can fail before the rename now runs before it, and a failure after it puts the directory back — fixes [#713](https://github.com/pypa/wheel/issues/713), four regression tests each verified to fail on the unfixed code | ⚪ Withdrawn — an earlier fix ([#714](https://github.com/pypa/wheel/pull/714)) existed; closed in its favor with the guard + tests offered as a contribution there |
 
 <a name="airflow"></a>
 
@@ -257,8 +160,8 @@ I also review pull requests from other contributors in Apache projects. An appro
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#76481 — Fix `SecretCache` export in `airflow.sdk`](https://github.com/apache/airflow/pull/76481) | `SecretCache` resolved at runtime through the lazy-import map but was missing from `__all__` and the TYPE_CHECKING re-exports, so type checkers flagged every import — including seven inside Airflow core itself; same drift class as the project's own `lineage` fix | ⚪ Closed after review — a contributor's main-branch verification showed the exclusion is deliberate (two named test exemptions + the type-checker stub already exporting it), and the PR was withdrawn with thanks |
-| [#76486 — Add `__dir__` to `airflow.sdk` so `dir()` exposes the lazy public API](https://github.com/apache/airflow/pull/76486) | The module resolved its 105-name public API through `__getattr__` alone, so `dir()` — what IDEs, REPLs and tooling discover — hid the entire surface until each name was touched; PEP 562 recommends pairing `__getattr__` with a `__dir__` | 🟢 Open · in review — rebased standalone after #76481 closed (the two fixes are independent) |
+| [#76481 — Fix `SecretCache` export in `airflow.sdk`](https://github.com/apache/airflow/pull/76481) | `SecretCache` resolved at runtime through the lazy-import map but was missing from `__all__` and the TYPE_CHECKING re-exports, so type checkers flagged every import — including seven inside Airflow core itself | ⚪ Closed after review — a contributor's main-branch verification showed the exclusion is deliberate (two named test exemptions + the type-checker stub already exporting it), withdrawn with thanks |
+| [#76486 — Add `__dir__` to `airflow.sdk` so `dir()` exposes the lazy public API](https://github.com/apache/airflow/pull/76486) | the module resolved its 105-name public API through `__getattr__` alone, so `dir()` — what IDEs, REPLs and tooling discover — hid the entire surface until each name was touched; PEP 562 recommends pairing `__getattr__` with a `__dir__` | 🟢 Open · in review — rebased standalone after #76481 closed (the two fixes are independent) |
 | [#76869 — Add `__dir__` to the airflow package root so dir() exposes lazy imports](https://github.com/apache/airflow/pull/76869) | the same PEP 562 gap one level up: the core `airflow` package root also resolved lazy imports through `__getattr__` alone, hiding them from `dir()` | 🟢 Open · in review |
 | [#76935 — Fix `XComArg.zip()` and `concat()` when the upstream XCom is a dict](https://github.com/apache/airflow/pull/76935) | `resolve()` says dicts are valid for both, but only `map()` knew the convention since #75022 — zipping a dict upstream silently produced tuples filled with the raw `NOTSET` sentinel object (or key-lookup values on int-keyed dicts), and `concat()` yielded bare keys; both now emit `(key, value)` tuples — proven live on main before the fix; reviewer independently ran the tests on both trees, then prescribed the convert-once-in-resolve shape that took a 20k-key zip from 31s to 0.029s | 🟢 Open · in review, revision applied |
 | [#77136 — resolve XCom backend loads only for keys that are stored through it](https://github.com/apache/airflow/pull/77136) | the get-side gate of the new language-SDK XCom backend never checked the key, so a runtime reading a `_link_` or skip-decision key sent the raw row value to the backend's load hook — a value that was never externalized; mirrors the set-side exclusions in all three get handlers — proven failing-first in the coordinator test harness | 🟢 Open · in review |
@@ -270,7 +173,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#4528 — recognize default-key ciphertext in `isCiphertext` under a custom key](https://github.com/apache/hertzbeat/pull/4528) | `isCiphertext` answered `false` for data encoded with the default secret key while a custom key was configured, while `aesDecode` decrypted the same payload via its default-key fallback — so callers deciding decrypt-vs-use-as-is treated real ciphertext as plaintext (three live call sites; a fourth already worked around it) — fixes [#4527](https://github.com/apache/hertzbeat/issues/4527), self-found by mining the project's fresh credential-hardening fixes for siblings | 🟢 Open · in review |
-| [#4548 — stop jdbc connection property injection through database diagnostics](https://github.com/apache/hertzbeat/pull/4548) | the 2.0 gateway diagnostics service concatenated monitor-supplied host/port/database straight into a `jdbc:mysql://` url, so `db?allowLoadLocalInfile=true` injected arbitrary driver properties — exactly the attack class `JdbcUrlSafetyUtil` was built for in #4299, whose guard set the sibling `DatabaseToolsImpl` carries but this newer call site dropped — located by auditing every call site of the guard, regression tests verified failing-first (the injected property shows up verbatim in the driver's exception pre-fix) | 🟢 Open · in review |
+| [#4548 — stop jdbc connection property injection through database diagnostics](https://github.com/apache/hertzbeat/pull/4548) | the 2.0 gateway diagnostics service concatenated monitor-supplied host/port/database straight into a `jdbc:mysql://` url, so `db?allowLoadLocalInfile=true` injected arbitrary driver properties — exactly the attack class `JdbcUrlSafetyUtil` was built for in #4299, whose guard set the sibling `DatabaseToolsImpl` carries but this newer call site dropped — located by auditing every call site of the guard, regression tests verified failing-first | 🟢 Open · in review |
 
 <a name="opendal"></a>
 
@@ -279,6 +182,18 @@ I also review pull requests from other contributors in Apache projects. An appro
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#8484 — trim whitespace in `normalize_root`](https://github.com/apache/opendal/pull/8484) | `normalize_root`'s own documented rules say whitespace is trimmed (identical wording to `normalize_path`, which trims and is pinned-tested), but the code never did — a root configured as `" my-dir "` became `"/ my-dir /"` and every object path under the backend silently carried the spaces | 🟢 Open · in review |
+
+<a name="iceberg"></a>
+
+## <img src="https://github.com/apache.png" width="24" alt="Apache"> Apache Iceberg (PyIceberg)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#4285 — handle negative-scale Decimals in increment, decrement and truncate_decimal](https://github.com/apache/iceberg-python/pull/4285) | three remaining call sites of a `Decimal` scale misread (`abs()` applied to the exponent) turned `1E+2` into `0.02` on increment — four orders of magnitude off; the same root cause was fixed elsewhere by #3997 — fixes [#4284](https://github.com/apache/iceberg-python/issues/4284), self-found by mining recently merged validation fixes for unfixed siblings | ✅ Merged by Fokko Driesprong — closed #4284 as completed |
+| [#4287 — reject non-finite floats on conversion to Decimal](https://github.com/apache/iceberg-python/pull/4287) | an infinity float/double literal crashed `to(DecimalType)` with a bare `decimal.InvalidOperation` instead of the module's standard conversion error — fixes [#4286](https://github.com/apache/iceberg-python/issues/4286), self-found while auditing the conversion surfaces for unfixed siblings | ✅ Merged by Fokko Driesprong — closed #4286 as completed |
+| [#4331 — order -0.0 below 0.0 in data file metrics bounds](https://github.com/apache/iceberg-python/pull/4331) | the parquet-metrics accumulator (`min(val, current)`) keeps whichever zero arrives last, so a late `-0.0` lowers an existing `+0.0` upper bound and a late `+0.0` raises an existing `-0.0` lower bound — the serialized bounds then order above a value present in the file; same class as the freshly merged #4324, flipped directions because the accumulator's argument order is flipped — proven failing-first on main for both arrival orders | ✅ Merged by Fokko Driesprong after his argument-order simplification round |
+| [#4372 — convert float literals to wide decimal columns without InvalidOperation](https://github.com/apache/iceberg-python/pull/4372) | converting a float literal to a decimal column whose precision can't hold the value crashed with a bare `InvalidOperation` instead of the module's standard conversion error — fail-first proven for both overflow cases, the infinity/NaN contract from our merged #4287 preserved, with the >38-digit bind-time boundary documented as a non-blocking note | 🟢 Open · **approved** (decimal-domain reviewer directly @-requested as the #4287 author) · awaiting merge |
+| [#4412 — populate nan_value_counts when writing parquet files](https://github.com/apache/iceberg-python/pull/4412) | the parquet writer returned an empty `nan_value_counts` unconditionally — pyarrow's statistics API exposes no NaN count, so the writer now counts NaNs from the written table itself (`is_nan` sums, nulls excluded per the spec) and threads them through a new optional parameter; NaN-aware scan pruning had been silently dead for every pyiceberg-written table — fixes [#4396](https://github.com/apache/iceberg-python/issues/4396), filed by us | 🟢 Open · in review |
 
 <a name="pulsar"></a>
 
@@ -290,7 +205,7 @@ I also review pull requests from other contributors in Apache projects. An appro
 
 | Bug report | What it documents | Status |
 |---|---|---|
-| [#27377 — `RelativeTimeUtil` silently fabricates values for overflow-sized inputs](https://github.com/apache/pulsar/issues/27377) | every other malformed input raises, but `"15252526452552645w"` returns a wrapped garbage value — the JDK `TimeUnit` conversion saturates at `Long.MAX_VALUE` seconds and the week/year step then wraps it; measured on the project's own compiled classes, with the fix proven fail-first through the project's gradle setup | 🟡 Filed — fix branch staged, PR opens once #27375 gets its first maintainer signal |
+| [#27377 — `RelativeTimeUtil` silently fabricates values for overflow-sized inputs](https://github.com/apache/pulsar/issues/27377) | every other malformed input raises, but `"15252526452552645w"` returns a wrapped garbage value — the JDK `TimeUnit` conversion saturates at `Long.MAX_VALUE` seconds and the week/year step then wraps it; measured on the project's own compiled classes | ⚪ Closed — fixed by community PR [#27464](https://github.com/apache/pulsar/pull/27464) (merged); our staged fix branch retired |
 
 <a name="superset"></a>
 
@@ -298,8 +213,27 @@ I also review pull requests from other contributors in Apache projects. An appro
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | ✅ Approved by aminghadersohi ("LGTM") |
-| [#46114 — support 'last day of' / 'last of' time range phrases](https://github.com/apache/superset/pull/46114) | the time-range lookup gave `first day of last quarter` a correct since-bound but silently degraded the until-bound to yesterday; the two new lookup entries mirror the first-day patterns with an end-of modifier — maintainer-verified ("the patterns resolve to the correct dates"), docs updated in-PR | ✅ Approved by aminghadersohi ("LGTM") |
+| [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | ✅ Approved by aminghadersohi ("LGTM") · awaiting merge |
+| [#46114 — support 'last day of' / 'last of' time range phrases](https://github.com/apache/superset/pull/46114) | the time-range lookup gave `first day of last quarter` a correct since-bound but silently degraded the until-bound to yesterday; the two new lookup entries mirror the first-day patterns with an end-of modifier — maintainer-verified ("the patterns resolve to the correct dates"), docs updated in-PR | ✅ Approved by aminghadersohi ("LGTM") · awaiting merge |
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#46162 — Python-Unit CI fails mcp_service tool tests on every pull request since Nov 10](https://github.com/apache/superset/issues/46162) | CI-health report with the full run-links evidence table and the master-green paradox; filed so reviewers know the red checks on PRs are upstream, not the PR | 🟡 Open — resolution evidence posted (environmental, outside the mcp_service path); offered closure |
+
+<a name="argocd"></a>
+
+## <img src="https://github.com/argoproj.png" width="24" alt="Argo"> Argo CD (CNCF)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#30892 — format float64 generator params as plain decimals for selector matching](https://github.com/argoproj/argo-cd/pull/30892) | `flattenParameters` formats generator parameter values with `fmt.Sprintf("%v", ...)`, and float64 renders via `%g` — JSON/YAML numbers ≥ 1e6 or < 1e-4 become scientific notation (`1.762e+09`), so a post-generator selector comparing `n=1762000000` silently never matches; now formatted in plain decimal notation — fixes [#30891](https://github.com/argoproj/argo-cd/issues/30891), self-found with a probe: `float64(1762000000)` → `"1.762e+09"`, selector match `false` | 🟢 Open · maintainer LGTM'd, review points addressed same-day (scope verified correct: only `goTemplate: true` paths) · awaiting formal approval |
+| [#30924 — evaluate sync windows against the operation being processed](https://github.com/argoproj/argo-cd/pull/30924) | `setOperationState` patches the API server but never the in-memory app object, so `syncWindowPreventsSync` derived `isManual`/`operationStartTime` from the *previous* operation's stale status — after a manual sync, an always-on deny window with `manualSync: true` allowed the queued automated sync through. Unit-level repro: probe returned `blocked=false` with an active deny window — fixes [#30914](https://github.com/argoproj/argo-cd/issues/30914), root-caused from another user's report | 🟢 Open · CI green · awaiting review |
+| [#30981 — clean error message for missing BitBucket branch hash](https://github.com/argoproj/argo-cd/pull/30981) | `BitBucketCloudProvider.GetBranches` checked-and-returned `err` at the top, then formatted `%w` with that guaranteed-nil error on a missing/non-string `target.hash` — users saw `error getting SHA for branch …: %!w(<nil>)` whenever BitBucket returned an odd payload; now a clean named message + regression test — fixes [#30980](https://github.com/argoproj/argo-cd/issues/30980), filed by us; same class as #30855, single site confirmed by package scan | 🟢 Open · CI green (lint round fixed same-session) · awaiting review |
+| [#31036 — scope the diff cache by the diff strategy](https://github.com/argoproj/argo-cd/pull/31036) | cached app diffs were keyed without the diff strategy, so a result produced by one strategy could be reused by another — implements the maintainer-requested [#30969](https://github.com/argoproj/argo-cd/issues/30969): writes are strategy-scoped, a nil diffConfig skips the scoped write (a poisoned fallback can't be cached), and the unscoped key is dual-written so legacy server-side readers keep working; e2e caught the missing dual-write as a real `argocd app diff` regression before review — fixed same-session with a flow test pinning it | 🟢 Open · CodeRabbit majors adopted + 3 strategy flow tests · CI re-rolling · awaiting review |
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#30891 — ApplicationSet: post-generator selector silently fails to match numeric params](https://github.com/argoproj/argo-cd/issues/30891) | scientific-notation rendering of float64 generator params breaks selector equality; scoping analysis posted with exact line refs (non-goTemplate paths stringify at the generator level = separate follow-up decision) | 🟡 Filed — fix open as #30892 |
 
 <a name="dapr"></a>
 
@@ -312,18 +246,20 @@ I also review pull requests from other contributors in Apache projects. An appro
 | [#11050 — an unknown CEL expression identifier hangs daprd in an infinite compile loop](https://github.com/dapr/dapr/issues/11050#issuecomment-6691611633) | confirmed with a probe that never returns: a compile error shares its message prefix with the "missing variable" path, so the expression recompiles forever — affects pubsub routing rules and circuit-breaker expressions | 🟢 Confirmed — repro + mechanism posted |
 | [#11032 — outbox PublishInternal panics on multi-projection transactions](https://github.com/dapr/dapr/issues/11032#issuecomment-6745667701) | confirmed with an in-package probe running the issue's exact 4-operation batch: the strip loop mutates `operations` while ranging over it — each in-place shift reassigns the slice to a narrower view, so a later iteration dies with `slice bounds out of range [4:2]` and entries are skipped along the way | 🟢 Confirmed — repro + mechanism posted |
 
-<a name="zephyr"></a>
+<a name="onnx"></a>
 
-## <img src="https://github.com/zephyrproject-rtos.png" width="24" alt="Zephyr"> Zephyr RTOS (Linux Foundation)
+## <img src="https://github.com/onnx.png" width="24" alt="ONNX"> ONNX (Linux Foundation)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#124926 — unlock interrupts on error paths in rx_enable](https://github.com/zephyrproject-rtos/zephyr/pull/124926) | `ifx_cat1_uart_async_rx_enable()` locked interrupts before validating its arguments and DMA state, but four error paths returned without unlocking — a caller passing a bad buffer or racing an active RX got the system frozen with interrupts disabled. Found by scanning every `irq_lock()` error path in `drivers/` after the same bug was fixed in two DMA drivers a day apart; maintainer requested a v4.5 backport — tracking issue [#124960](https://github.com/zephyrproject-rtos/zephyr/issues/124960) closed against the merged #124524 | ⚪ Closed — superseded by merged #124524 |
-| [#124927 — unlock interrupts on invalid pin configurations](https://github.com/zephyrproject-rtos/zephyr/pull/124927) | Two GPIO drivers returned `-ENOTSUP` from their configure callbacks with interrupts still locked — one rejected a pin set as both input and output, the other fell through the direction switch's default arm. Both now unlock before returning | ✅ **MERGED** (first Zephyr merge) |
-| [#124961 — unlock interrupts on USB error paths](https://github.com/zephyrproject-rtos/zephyr/pull/124961) | The Renesas RA UDC returned `-EIO` from endpoint-dequeue with interrupts still locked when transfer abort failed, and the SAM USBC attach returned the pinctrl error the same way — leaving the system frozen after a rejected attach. Both now unlock before returning | ✅ **MERGED** by Anas Nashif (two maintainer approvals) |
-| [#124962 — unlock interrupts on grant double-free](https://github.com/zephyrproject-rtos/zephyr/pull/124962) | Xen's grant-table release path logged a warning and returned from the double-free case with interrupts still locked — a repeated release froze the system permanently. Now unlocks before returning | ✅ **MERGED** by Anas Nashif (three maintainer approvals) |
-| [#125508 — avoid 64-bit divisions in TDK temperature conversions](https://github.com/zephyrproject-rtos/zephyr/pull/125508) | Two TDK sensor drivers divided 64-bit values by constants in their temperature math, pulling the software 64-bit division helper onto divider-less MCUs — the icm4268x decoder was the unfixed sibling of the already-reworked #124230 path. Rewritten in int32 with the reduced reciprocal, exhaustively equivalence-checked over the full input ranges | ✅ **MERGED** by Anas Nashif (two maintainer approvals) |
-| [#125667 — close the connection on unexpected packet types](https://github.com/zephyrproject-rtos/zephyr/pull/125667) | The MQTT rx dispatcher treated packet types a client can never receive — CONNECT, SUBSCRIBE, UNSUBSCRIBE and PINGREQ (client-to-server only) plus reserved type 0 (MQTT v3.1.1 §2.2.1 / v5.0 §2.1.2) — as a no-op default case: the packet was silently dropped while the connection stayed open, leaving client and broker with diverging session state. Now validated right after the fixed header, before the claimed body is read, reporting `-EBADMSG` so the input loop disconnects with Protocol Error (0x82) through the existing errno mapping — fixes [#125514](https://github.com/zephyrproject-rtos/zephyr/issues/125514) | 🟢 Open · **approved by jukkar** · rlubos hoist-rework addressed (type validated before the body is read) · awaiting merge |
+| [#8758 — accept omitted optional inputs in Dropout](https://github.com/onnx/onnx/pull/8758) | the reference implementation picked `Dropout`'s optional inputs by position count, but the evaluator hands over an omitted optional input as `None` instead of dropping it — so a training-mode model that leaves out `ratio` (legal per spec; the default is 0.5) crashed with a `TypeError`, and every opset-12 node carrying the `training_mode` attribute failed before the implementation even ran. Found with a differential sweep that omits each optional input from all 1,876 node tests and runs the result through the reference evaluator — `Dropout` was the only op whose crash wasn't a deliberate validation guard | 🟢 Open · maintainer-approved (justinchuby) · CI awaiting first-time workflow approval |
+| [#8760 — round QLinearConv before adding y_zero_point](https://github.com/onnx/onnx/pull/8760) | the reference quantized the accumulator with ties-to-even rounding *after* adding the zero point, while the spec rounds the quotient first — the orders disagree whenever the quotient is a half-integer and the zero point is odd (quotient 0.5 with zero point 1: spec 1, reference 2). Found by mining the merged QLinearMatMul fix (#8700) for unfixed siblings — `QLinearConv` was the one remaining op in the class | 🟢 Open · in review · CI awaiting first-time workflow approval |
+| [#8772 — compute BatchNormalization training and LpNormalization in float32](https://github.com/onnx/onnx/pull/8772) | both reference implementations did their arithmetic in float16: BatchNormalization's training-mode variance squares the input and overflows the float16 range above ~256 (output collapsed to zeros), and LpNormalization's power-2 norm returned `[0, 0, 0]` instead of `[0.42, 0.57, 0.71]`. Both now compute in float32 for float16/bfloat16 inputs — the same fix the maintainers shipped for InstanceNormalization, LRN, LogSoftmax and SoftmaxCrossEntropyLoss days earlier; found by sweeping the remaining normalization/reduction ops for the class. The running-statistics blend is also promoted (a float16-quantized previous mean corrupts through cancellation: -0.4 becomes 0 on the regression case) | 🟢 Open · in review · all three Copilot findings addressed · `topic:`/`module:` label requested |
+| [#8786 — compute LpPool in float32 for float16/bfloat16](https://github.com/onnx/onnx/pull/8786) | the pooling sibling of #8772: LpPool raised the input to the power `p` in the input dtype, so float16 windows containing values above 256 pooled to `inf` while the true L2 norms were representable. GlobalLpPool already computes in log space and needed nothing; found while sweeping the rest of the pool family | 🟢 Open · **maintainer-approved (justinchuby)** · docs regenerated generator-exact · `topic:`/`module:` label requested |
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#8811 — reference: CumSum and Sum produce wrong float16 results while the true value is representable](https://github.com/onnx/onnx/issues/8811) | the reduction siblings of the fixed normalization ops still accumulate in the input dtype — float16 CumSum/Sum lose precision or overflow where float32 accumulation would keep the exact result; filed with failing-first probes | 🟡 Filed — fix implemented and staged on the fork (opens per the project's PR etiquette) |
 
 <a name="osquery"></a>
 
@@ -332,93 +268,199 @@ I also review pull requests from other contributors in Apache projects. An appro
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#9280 — reject truncated shellbag file-entry records instead of throwing](https://github.com/osquery/osquery/pull/9280) | `fileEntry()` subtracted 8 from the position of the `0400EFBE` signature it found anywhere in attacker-controlled shellbag data — a record starting with that signature underflowed the unsigned offset past its zero-check, and truncated records made `substr()` throw `std::out_of_range`, which the table layer turns into a failed query: one malformed registry value silently killed the entire `shellbags` query. Three guards now return the existing unsupported sentinel; found as the missed sibling of #9218's drive-item guards | 🟢 **Approved** · all CI green · awaiting merge |
-| [#9283 — check netlink payload lengths before typed reads in routes](https://github.com/osquery/osquery/pull/9283) | The Linux routes table walked netlink attributes with `RTA_OK()`, which validates only the attribute *header* against the remaining bytes, then dereferenced the payloads unchecked — interface indexes, metrics and addresses were read as `int`/`inet_ntop` from buffers that could end mid-field, so a truncated final attribute read past the end of the message. Every typed read now checks `RTA_PAYLOAD()`; ships with a byte-by-byte netlink test harness (the routes table's first) whose truncated-attribute cases read past the message on master | 🟢 **Approved** · artifact-outage rerun triggered by the maintainer (close/reopen) · awaiting merge |
-| [#9286 — reject truncated records in the remaining shellitem parsers](https://github.com/osquery/osquery/pull/9286) | Eleven more shellbag parsers read fixed-offset fields with `substr()` and could throw on attacker-controlled truncated records, aborting the whole query — the file-entry fix (#9280) left these siblings behind. Every parser now rejects under-length records with its existing sentinel; nine tests craft records that end inside each parser's field reads | 🟢 **Approved by mike-myers-aapl** — he verified both round-4 fixes himself and resolved the Copilot threads · awaiting Windows CI green |
+| [#9283 — check netlink payload lengths before typed reads in routes](https://github.com/osquery/osquery/pull/9283) | the Linux routes table walked netlink attributes with `RTA_OK()`, which validates only the attribute *header* against the remaining bytes, then dereferenced the payloads unchecked — interface indexes, metrics and addresses were read as `int`/`inet_ntop` from buffers that could end mid-field. Every typed read now checks `RTA_PAYLOAD()`; ships with a byte-by-byte netlink test harness (the routes table's first) whose truncated-attribute cases read past the message on master | 🟢 **Approved** · artifact-outage rerun triggered by the maintainer (close/reopen) · awaiting merge |
+| [#9286 — reject truncated records in the remaining shellitem parsers](https://github.com/osquery/osquery/pull/9286) | eleven more shellbag parsers read fixed-offset fields with `substr()` and could throw on attacker-controlled truncated records, aborting the whole query — the file-entry fix (#9280) left these siblings behind. Every parser now rejects under-length records with its existing sentinel; nine tests craft records that end inside each parser's field reads | 🟢 **Approved by mike-myers-aapl** — he verified both round-4 fixes himself and resolved the Copilot threads · awaiting Windows CI green |
+| [#9322 — guard the prometheus_targets config against malformed values](https://github.com/osquery/osquery/pull/9322) | the prometheus_metrics table read the `prometheus_targets` config section without validating its type — the config parser plugin copies the value verbatim and the table then called rapidjson `HasMember()`/`GetArray()`/`GetUint64()` on whatever shape it found, so a config value that is not an object fired rapidjson's `IsObject()` assertion (abort in debug builds, undefined behavior in release, since osquery does not override `RAPIDJSON_ASSERT`). The config value is user-controlled, so a typo broke the whole table. Every level is now validated with the file's `LOG(WARNING)` + graceful-return pattern, the logic moved into a testable `parsePrometheusTargetsConfig()` helper, and unit tests cover malformed and valid configurations — fixes [#9321](https://github.com/osquery/osquery/issues/9321) | 🟢 Open · in review |
 
-<a name="onnx-fp32"></a>
+<a name="zephyr"></a>
 
-## <img src="https://github.com/onnx.png" width="24" alt="ONNX"> ONNX — reference precision
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#8772 — compute BatchNormalization training and LpNormalization in float32](https://github.com/onnx/onnx/pull/8772) | Both reference implementations did their arithmetic in float16: BatchNormalization's training-mode variance squares the input and overflows the float16 range above ~256 (output_var came out as `inf` with the true value still representable, and the output collapsed to zeros), and LpNormalization's power-2 norm overflowed the same way, returning `[0, 0, 0]` instead of `[0.42, 0.57, 0.71]`. Both now compute in float32 for float16/bfloat16 inputs — the same fix the maintainers shipped for InstanceNormalization, LRN, LogSoftmax and SoftmaxCrossEntropyLoss days earlier; found by sweeping the remaining normalization/reduction ops for the class. The running-statistics blend is also promoted (a float16-quantized previous mean corrupts through cancellation: -0.4 becomes 0 on the regression case) | 🟢 Open · in review · all three Copilot findings addressed (test shapes, running-stats blend, generator-exact docs) · `topic:`/`module:` label requested |
-| [#8786 — compute LpPool in float32 for float16/bfloat16](https://github.com/onnx/onnx/pull/8786) | The pooling sibling of #8772: LpPool raised the input to the power `p` in the input dtype, so float16 windows containing values above 256 pooled to `inf` while the true L2 norms were representable. GlobalLpPool already computes in log space and needed nothing; found while sweeping the rest of the pool family | 🟢 Open · **maintainer-approved (justinchuby)** · docs regenerated generator-exact · `topic:`/`module:` label requested |
-
-<a name="onnx"></a>
-
-## <img src="https://github.com/onnx.png" width="24" alt="ONNX"> ONNX (Linux Foundation)
+## <img src="https://github.com/zephyrproject-rtos.png" width="24" alt="Zephyr"> Zephyr RTOS (Linux Foundation)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#8758 — accept omitted optional inputs in Dropout](https://github.com/onnx/onnx/pull/8758) | The reference implementation picked `Dropout`'s optional inputs by position count, but the evaluator hands over an omitted optional input as `None` instead of dropping it — so a training-mode model that leaves out `ratio` (legal per spec; the default is 0.5) crashed with a `TypeError`, and every opset-12 node carrying the `training_mode` attribute failed before the implementation even ran, because that attribute arrived as a keyword the function never declared. Found with a differential sweep that omits each optional input from all 1,876 node tests and runs the result through the reference evaluator — `Dropout` was the only op whose crash wasn't a deliberate validation guard | 🟢 Open · maintainer-approved (justinchuby) · CI awaiting first-time workflow approval |
-| [#8760 — round QLinearConv before adding y_zero_point](https://github.com/onnx/onnx/pull/8760) | The reference quantized the accumulator with ties-to-even rounding *after* adding the zero point, while the spec rounds the quotient first — the orders disagree whenever the quotient is a half-integer and the zero point is odd (quotient 0.5 with zero point 1: spec 1, reference 2). Found by mining the merged QLinearMatMul fix (#8700) for unfixed siblings — `QLinearConv` was the one remaining op in the class | 🟢 Open · in review · CI awaiting first-time workflow approval |
+| [#124926 — unlock interrupts on error paths in rx_enable](https://github.com/zephyrproject-rtos/zephyr/pull/124926) | `ifx_cat1_uart_async_rx_enable()` locked interrupts before validating its arguments and DMA state, but four error paths returned without unlocking — a caller passing a bad buffer or racing an active RX got the system frozen with interrupts disabled. Found by scanning every `irq_lock()` error path in `drivers/` after the same bug was fixed in two DMA drivers a day apart; maintainer requested a v4.5 backport — tracking issue [#124960](https://github.com/zephyrproject-rtos/zephyr/issues/124960) closed against the merged #124524 | ⚪ Closed — superseded by merged #124524 |
+| [#124927 — unlock interrupts on invalid pin configurations](https://github.com/zephyrproject-rtos/zephyr/pull/124927) | two GPIO drivers returned `-ENOTSUP` from their configure callbacks with interrupts still locked — one rejected a pin set as both input and output, the other fell through the direction switch's default arm. Both now unlock before returning | ✅ **MERGED** (first Zephyr merge) |
+| [#124961 — unlock interrupts on USB error paths](https://github.com/zephyrproject-rtos/zephyr/pull/124961) | the Renesas RA UDC returned `-EIO` from endpoint-dequeue with interrupts still locked when transfer abort failed, and the SAM USBC attach returned the pinctrl error the same way — leaving the system frozen after a rejected attach. Both now unlock before returning | ✅ **MERGED** by Anas Nashif (two maintainer approvals) |
+| [#124962 — unlock interrupts on grant double-free](https://github.com/zephyrproject-rtos/zephyr/pull/124962) | Xen's grant-table release path logged a warning and returned from the double-free case with interrupts still locked — a repeated release froze the system permanently. Now unlocks before returning | ✅ **MERGED** by Anas Nashif (three maintainer approvals) |
+| [#125508 — avoid 64-bit divisions in TDK temperature conversions](https://github.com/zephyrproject-rtos/zephyr/pull/125508) | two TDK sensor drivers divided 64-bit values by constants in their temperature math, pulling the software 64-bit division helper onto divider-less MCUs — the icm4268x decoder was the unfixed sibling of the already-reworked #124230 path. Rewritten in int32 with the reduced reciprocal, exhaustively equivalence-checked over the full input ranges | ✅ **MERGED** by Anas Nashif (two maintainer approvals) |
+| [#125667 — close the connection on unexpected packet types](https://github.com/zephyrproject-rtos/zephyr/pull/125667) | the MQTT rx dispatcher treated packet types a client can never receive — CONNECT, SUBSCRIBE, UNSUBSCRIBE and PINGREQ (client-to-server only) plus reserved type 0 (MQTT v3.1.1 §2.2.1 / v5.0 §2.1.2) — as a no-op default case: the packet was silently dropped while the connection stayed open, leaving client and broker with diverging session state. Now validated right after the fixed header, before the claimed body is read, reporting `-EBADMSG` so the input loop disconnects with Protocol Error (0x82) through the existing errno mapping — fixes [#125514](https://github.com/zephyrproject-rtos/zephyr/issues/125514) | 🟢 Open · **approved by jukkar** · rlubos hoist-rework addressed (type validated before the body is read) · awaiting merge |
+| [#125797 — reset the MQTT disconnect reason between sessions](https://github.com/zephyrproject-rtos/zephyr/pull/125797) | the decoder sets `internal.disconnect_reason` on processing errors (topic alias invalid, implementation specific error) and `disconnect_5_0_notify()` prefers it over the errno mapping, but nothing ever clears it — after a reconnect on the same client instance the next error sent the previous session's reason. Now cleared in `client_reset()` (which runs after each DISCONNECT is sent), with a two-connection regression test: topic-alias violation gives 0x94 on the first DISCONNECT, the fresh session's own error gives 0x82 instead of leaking 0x94 — fixes [#125792](https://github.com/zephyrproject-rtos/zephyr/issues/125792) | 🟢 Open · **approved by jukkar + rlubos** · awaiting merge |
+| [#125909 — clear MQTT topic alias mappings on connection reset](https://github.com/zephyrproject-rtos/zephyr/pull/125909) | the decoder learns broker topic aliases into the client instance and resolves alias-only PUBLISHes against that table, but nothing ever clears it — after a reconnect on the same client instance an alias-only PUBLISH silently resolved against the previous session's topics (MQTT 5.0 §3.3.4 limits alias mappings to one connection). Now cleared in `client_reset()` with a two-connection regression test: alias 1 taught on connection 1, then an alias-only PUBLISH must return `-EBADMSG` instead of resolving the stale topic — fixes [#125908](https://github.com/zephyrproject-rtos/zephyr/issues/125908) | 🟢 Open · **approved by jukkar + rlubos** · optional nit applied · awaiting merge |
+| [#126044 — avoid 64-bit divisions in sensor sample conversion](https://github.com/zephyrproject-rtos/zephyr/pull/126044) | the rm3100 magnetometer decoder divided a 64-bit value twice per sample (by the cycle-count divider, then by 100) and the icm20689 temperature conversion divided a 64-bit product by 3268 — both pulled the software 64-bit division helper onto divider-less cores on every conversion, the same class as the merged #125508. Both now run in int32 arithmetic (divisor powers of two folded into the shift, divisions composed and split into whole/remainder parts), with equivalence proven exhaustively over the full input ranges — fixes [#126043](https://github.com/zephyrproject-rtos/zephyr/issues/126043) | 🟢 Open · **approved by afontaine-invn** · awaiting maintainer merge |
 
-<a name="pipx"></a>
+<a name="botorch"></a>
 
-## <img src="https://github.com/pypa.png" width="24" alt="pipx"> pipx
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#2423 — refuse environments that lost their record](https://github.com/pypa/pipx/pull/2423) | `pipx repair` reported environments whose `pipx_metadata.json` a killed install lost as "healthy" (exit 0), even though the project's own #2234 hardening makes `pipx reinstall` and `pipx reinstall-all` refuse them — the repair flow could only reach that refusal through a broken interpreter, so a still-running one silenced it and a user following `pipx list`'s fix advice got a silent no-op — fixes [#2422](https://github.com/pypa/pipx/issues/2422), self-found by auditing the killed-install hardening series for the command its changelog promised but never wired | ✅ Merged — approved by the maintainer within the hour |
-| [#2431 — report existing PATH entries accurately](https://github.com/pypa/pipx/pull/2431) | every repeat `pipx ensurepath` run claimed "all pipx binary directories have been appended to PATH" when nothing was appended — the directories were already in PATH, so the summary reported a change that did not happen and pointed users at `--force`; reworded to report the true state and the `--force`/`--prepend` way to re-add, with the summary checking every directory before making the claim — fixes [#2430](https://github.com/pypa/pipx/issues/2430) | ✅ Merged — lead maintainer merged with the `bug` label, 27 checks green |
-| [#2446 — skip prerelease builds in the standalone-Python version index](https://github.com/pypa/pipx/pull/2446) | the version match stopped before a prerelease suffix, so all 195 `cpython-3.16.0a1` assets in the current python-build-standalone release aliased under the stable `3.16.0` key and `--fetch-python` downloaded an alpha while recording it as the final 3.16.0 — prerelease assets are now skipped, so a version with no final build fails loudly instead — fixes [#2445](https://github.com/pypa/pipx/issues/2445), found live against the release index, fail-first regression test included; the maintainer refactored the match to read the tag once at merge | ✅ Merged — maintainer refactored at merge and closed the issue as completed |
-
-<a name="wheel"></a>
-
-## <img src="https://github.com/pypa.png" width="24" alt="wheel"> wheel
+## <img src="https://github.com/meta-pytorch.png" width="24" alt="BoTorch"> BoTorch (Meta)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#719 — don't leave the .dist-info directory renamed when 'wheel pack --local-version' fails](https://github.com/pypa/wheel/pull/719) | The rename to the new name-version `.dist-info` directory ran before anything else could fail, so a missing `METADATA` or `WHEEL` file, a `WHEEL` file without tags, or any write error left the unpacked directory under a name no wheel was ever produced for — everything that can fail before the rename now runs before it, and a failure after it puts the directory back — fixes [#713](https://github.com/pypa/wheel/issues/713), four regression tests each verified to fail on the unfixed code | ⚪ Withdrawn — an earlier fix ([#714](https://github.com/pypa/wheel/pull/714)) existed; closed in its favor with the guard + tests offered as a contribution there |
-
-<a name="virtualenv"></a>
-
-## <img src="https://github.com/pypa.png" width="24" alt="virtualenv"> virtualenv
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#3528 — skip generated-file-link tests without symlinks](https://github.com/pypa/virtualenv/pull/3528) | the generated-file-links test suite created symlinks directly, so every Windows contributor without Developer Mode saw 20 failures (`WinError 1314`) no change of theirs could fix — the suite now skips via the repo's own `fs_supports_symlink` probe, the idiom two other test files already used | ✅ Merged — maintainer merged main in and aligned the skip reason at merge |
+| [#3550 — preserve float64 precision of a Python-float best_f](https://github.com/meta-pytorch/botorch/pull/3550) | the analytic acquisition functions document `best_f` as "either a scalar or a `b`-dim Tensor", but the scalar form was rounded through the default dtype at construction while the Tensor form kept full precision — and Expected Improvement is exponentially sensitive to `best_f`, so with a double model and a large-magnitude incumbent the two forms disagreed by 137 orders of magnitude (EI `7.07e-02` vs `1.51e-139`) — fixes [#3549](https://github.com/meta-pytorch/botorch/issues/3549), self-found by mining the just-merged `make_scipy_bounds` precision fix (#3542) for the same Python-scalar-through-default-dtype class across the acquisition package | 🟢 Open · all local tests green incl. new regression test · Meta CLA signature pending |
+| [#3551 — preserve float64 precision of scalar best_f, tau and constraint bounds](https://github.com/meta-pytorch/botorch/pull/3551) | extends #3550 to the remaining sites of the same class: the qEI/qPI improvement buffers, qLogEI's buffer + `_log_improvement`, and the constrained-acquisition mixin's `con_lower/con_upper/con_both` value buffers (cast to `torch.double` + `.to(means)` casts in the feasibility funnel) — infeasible_cost and risk-measure buffers pattern-flagged but deliberately out of scope (not repro-verified) | 🟢 Open · Meta CLA green at open · awaiting review |
 
 <a name="pytorch"></a>
 
-## <img src="https://github.com/meta-pytorch.png" width="24" alt="BoTorch"> BoTorch
+## <img src="https://github.com/pytorch.png" width="24" alt="PyTorch"> PyTorch (Meta)
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#3550 — preserve float64 precision of a Python-float best_f](https://github.com/meta-pytorch/botorch/pull/3550) | The analytic acquisition functions document `best_f` as "either a scalar or a `b`-dim Tensor", but the scalar form was rounded through the default dtype at construction while the Tensor form kept full precision — and Expected Improvement is exponentially sensitive to `best_f`, so with a double model and a large-magnitude incumbent the two forms disagreed by 137 orders of magnitude (EI `7.07e-02` vs `1.51e-139`) — fixes [#3549](https://github.com/meta-pytorch/botorch/issues/3549), self-found by mining the just-merged `make_scipy_bounds` precision fix (#3542) for the same Python-scalar-through-default-dtype class across the acquisition package | 🟢 Open · all local tests green incl. new regression test · Meta CLA signature pending |
-
-<a name="pytorch-core"></a>
-
-## <img src="https://github.com/pytorch.png" width="24" alt="PyTorch"> PyTorch
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#203846 — make inductor's index_reduce validation match eager](https://github.com/pytorch/pytorch/pull/203846) | Inductor's own decomposition of `aten.index_reduce` checked devices but skipped the shape/dtype checks eager applies, so a scalar `self` with a 1-dim `source` broadcast through the mean path and silently returned `3.5` where eager raises "source tensor shape must match self tensor shape" — fixes [#202938](https://github.com/pytorch/pytorch/issues/202938), reproduced locally through the full raw/eager/aot_eager/inductor matrix after setting up MSVC + Windows SDK for torch.compile on this machine, fix verified on the nightly wheel with both the new regression test and the existing index_reduce test passing | 🟢 Open · ready for review · CLA signature pending |
-| [#203631 — validate SGD's dampening range](https://github.com/pytorch/pytorch/issues/203631) | SGD checks `lr`, `momentum` and `weight_decay` but not `dampening`, so values outside [0, 1] are silently accepted and the momentum buffer extrapolates instead of interpolating — a buffer that swings negative or grows without bound, with no error, on both the foreach and single-tensor paths; every sibling optimizer already validates its range-bounded parameters (Adadelta's `rho`, RMSprop's `alpha`, Adagrad's `lr_decay`, ASGD's `lambd`/`alpha`) — self-found by comparing each optimizer's validators against the parameters its update math actually consumes | 🟡 Issue filed · bot-triaged · awaiting `actionable` label · PR queued behind it (PyTorch requires the label before a PR) |
-| [#203849 — inductor's index_add has the same missing shape validation](https://github.com/pytorch/pytorch/issues/203849) | The sibling decomposition in the same file skips eager's shape check too: a scalar `self` with a 1-dim `source` silently returns `7.0` where eager raises — found by probing the next op in the family while the index_reduce fix was in CI | 🟡 Issue filed · awaiting `actionable` label · PR queued behind it |
-
-<a name="cibuildwheel"></a>
-
-## <img src="https://github.com/pypa.png" width="24" alt="cibuildwheel"> cibuildwheel
-
-| Pull request | What it fixes | Status |
-|---|---|---|
-| [#3038 — reject unsupported bash parameter expansions in environment values](https://github.com/pypa/cibuildwheel/pull/3038) | `${VAR:-default}`-style parameter nodes in `CIBW_ENVIRONMENT` expanded silently to a wrong value instead of failing — unsupported expansions fell through and escaped-`$` words expanded at the wrong position; the evaluator now rejects non-plain-name parameters loudly with the module's standard unsupported-construct error, single-char bash specials keep legacy behavior, +2 regression tests — full unit suite 937 passed / 70 skipped / 3 xfailed, green | 🟢 Open · all 7 CI checks green · 937-test unit suite green · awaiting review |
+| [#203846 — make inductor's index_reduce validation match eager](https://github.com/pytorch/pytorch/pull/203846) | Inductor's own decomposition of `aten.index_reduce` checked devices but skipped the shape/dtype checks eager applies, so a scalar `self` with a 1-dim `source` broadcast through the mean path and silently returned `3.5` where eager raises "source tensor shape must match self tensor shape" — fixes [#202938](https://github.com/pytorch/pytorch/issues/202938), reproduced locally through the full raw/eager/aot_eager/inductor matrix after setting up MSVC + Windows SDK for torch.compile on this machine | 🟢 Open · ready for review · CLA signature pending |
+| [#204077 — remove unsound Partial(max/min) preservation for nan_to_num partial reductions](https://github.com/pytorch/pytorch/pull/204077) | the DTensor op registration preserved a `Partial(max)`/`Partial(min)` shard prop through `nan_to_num`'s amplitude-clamping rewrites, so partial reductions silently returned wrong values (amax 5 vs 0, posinf 5 vs -1 on a Shard(0) tensor) — the three overloads deleted so DTensor materializes to Replicate first, regression test added to the distributed suite; completed the reporter's missing verification (their environment predated the bug) by running the issue's end-to-end repro fail-first on the 2.13 wheel — fixes [#203922](https://github.com/pytorch/pytorch/issues/203922); automated review processed same-session (5 findings implemented, 1 refuted with an empirical repro that disproved its claim) | 🟢 Open · in review · bot-labeled `release notes: distributed (dtensor)` at open |
+| [#203849 — inductor's index_add has the same missing shape validation](https://github.com/pytorch/pytorch/issues/203849) | the sibling decomposition in the same file skips eager's shape check too: a scalar `self` with a 1-dim `source` silently returns `7.0` where eager raises — found by probing the next op in the family while the index_reduce fix was in CI | 🟡 Issue filed · awaiting `actionable` label · PR queued behind it |
 
 | Bug report | What it documents | Status |
 |---|---|---|
-| [#3039 — environment values with an escaped dollar followed by the same variable expand at the wrong position](https://github.com/pypa/cibuildwheel/issues/3039) | `\$X$X` in one word expands to `y$X` where bash produces `$Xy` — the leftmost-occurrence `replace()` targets the part's text, not its position; filed with a bash ground-truth probe table, the root cause, and why the naive fixes (rfind) break the mirrored case | 🟡 Filed — fix directions documented |
+| [#203631 — SGD silently accepts out-of-range dampening values](https://github.com/pytorch/pytorch/issues/203631) | SGD checks `lr`, `momentum` and `weight_decay` but not `dampening`, so values outside [0, 1] are silently accepted and the momentum buffer extrapolates instead of interpolating — on both the foreach and single-tensor paths; every sibling optimizer already validates its range-bounded parameters — self-found by comparing each optimizer's validators against the parameters its update math actually consumes | 🟡 Issue filed · bot-triaged · awaiting `actionable` label · PR queued behind it (PyTorch requires the label before a PR) |
+| [#204084 — sign/sign_ preserve Partial(max/min) but sign(NaN) = 0 breaks the invariant](https://github.com/pytorch/pytorch/issues/204084) | follow-up from the #204077 verification: `sign(NaN)=0` while `max(sign(0), sign(5))=1`, so the preserved shard prop is unsound for sign too — verified empirically before filing; hardshrink/threshold/relu/round keep NaN so unaffected | 🟡 Issue filed · awaiting triage |
+| [#204083 — in-place nan_to_num_ on a Partial(max/min) DTensor still silently unsound](https://github.com/pytorch/pytorch/issues/204083) | follow-up from the #204077 automated review: the in-place path runs silently with the shard prop preserved, giving [5.0, 2.0] vs correct [0.0, 2.0] — a pre-existing defect unchanged by our PR, filed instead of writing the false BC note | ⚪ Closed as not-planned by maintainers |
 
-<a name="argocd"></a>
+<a name="actual"></a>
 
-## <img src="https://github.com/argoproj.png" width="24" alt="Argo"> Argo CD (CNCF)
+## <img src="https://github.com/actualbudget.png" width="24" alt="Actual Budget"> Actual Budget
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#30892 — format float64 generator params as plain decimals for selector matching](https://github.com/argoproj/argo-cd/pull/30892) | `flattenParameters` formats generator parameter values with `fmt.Sprintf("%v", ...)`, and float64 renders via `%g` — JSON/YAML numbers ≥ 1e6 or < 1e-4 become scientific notation (`1.762e+09`), so a post-generator selector comparing `n=1762000000` silently never matches; now formatted in plain decimal notation — fixes [#30891](https://github.com/argoproj/argo-cd/issues/30891), self-found with a probe: `float64(1762000000)` → `"1.762e+09"`, selector match `false` | 🟢 Open · 43/43 checks green across two full CI cycles · CodeRabbit-clean · maintainer review points addressed same-day · awaiting approval |
+| [#9416 — reject amounts too large for safe arithmetic on import](https://github.com/actualbudget/actual/pull/9416) | importing a CSV whose amount overflows the safe-integer range crashed the transaction list on render; the import preview now rejects such rows like other unparseable fields — fixes [#9415](https://github.com/actualbudget/actual/issues/9415) | 🟢 Open · all CI green · every review thread resolved · in review |
+| [#9419 — return focus to the input after picking a calendar day](https://github.com/actualbudget/actual/pull/9419) | picking a date in the calendar dropped keyboard focus, forcing mouse-only transaction entry — fixes [#9370](https://github.com/actualbudget/actual/issues/9370) | 🟢 Open · in review |
+
+<a name="agno"></a>
+
+## <img src="https://github.com/agno-agi.png" width="24" alt="agno"> agno
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#11414 — `LinearTools.update_issue` rejects its own documented call](https://github.com/agno-agi/agno/issues/11414) | GraphQL `$title: String!` non-null variable bound to `None` — the documented "title unchanged" call always fails; state updates advertised but impossible | 🟡 Reported · community contributor implementing; our fix + 6 tests staged |
+| [#11415 — `custom_scrape_website` returns field names instead of scraped data](https://github.com/agno-agi/agno/issues/11415) | dict-key iteration returned the query's schema instead of the page content; also repaired the module's broken test fixtures and revived a maintainer-skipped test | 🟡 Reported · community contributor implementing; our fix + tests staged |
+| [#11421 — toolkit HTTP calls without a timeout can hang the agent thread](https://github.com/agno-agi/agno/issues/11421) | `requests` call sites in 2 toolkits wait forever on a degraded upstream — scope corrected after a community fact-check confirmed Bright Data/Serply were already fixed | 🟡 Reported · handed to a community contributor with the corrected scope |
+
+<a name="crewai"></a>
+
+## <img src="https://github.com/crewAIInc.png" width="24" alt="crewAI"> crewAI
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#8845 — store sqlite checkpoint data as plain text](https://github.com/crewAIInc/crewAI/pull/8845) | checkpoint writes crash on SQLite < 3.45 (`no such function: jsonb`) — fixes [#8843](https://github.com/crewAIInc/crewAI/issues/8843) | 🟢 Open · CI green · in review |
+| [#8848 — publish JSON checkpoints atomically](https://github.com/crewAIInc/crewAI/pull/8848) | interrupted writes left truncated/corrupt checkpoint files — fixes [#8846](https://github.com/crewAIInc/crewAI/issues/8846) | 🟢 Open · CI green · in review |
+| [#8849 — tolerate malformed tool-call arguments in history replay](https://github.com/crewAIInc/crewAI/pull/8849) | uncaught `JSONDecodeError` crash replaying Anthropic/Bedrock conversations — fixes [#8847](https://github.com/crewAIInc/crewAI/issues/8847) | 🟢 Open · CI green · in review |
+
+<a name="weathergen"></a>
+
+## <img src="https://github.com/ecmwf.png" width="24" alt="ECMWF"> ECMWF WeatherGenerator
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#3028 — TrainLogger takes run_id and results path instead of the global config](https://github.com/ecmwf/WeatherGenerator/pull/3028) | the training logger held the entire global config object but only ever read the run id from it — now it takes the two parameters it needs and can be used standalone — fixes the remaining scope of [#1213](https://github.com/ecmwf/WeatherGenerator/issues/1213) | ⚪ Closed unmerged — the maintainer swept external PRs; the repo no longer accepts outside pull requests |
+| [#3030 — fix legacy metrics lookup level](https://github.com/ecmwf/WeatherGenerator/pull/3030) | the metrics-file backwards-compatibility branch probed a path no released version ever wrote, so reading any pre-rename run crashed with `FileNotFoundError` instead of using the compat file — fixes [#3029](https://github.com/ecmwf/WeatherGenerator/issues/3029), a self-found bug traced through the #601/#1831 history | ⚪ Closed unmerged — same external-PR sweep |
+| [#3032 — fix bare-path config entries in compare_run_configs](https://github.com/ecmwf/WeatherGenerator/pull/3032) | the config-comparison tool's bare-path format crashed with a doubled directory path ever since a config-loader fix changed `model_path` semantics — fixes [#3031](https://github.com/ecmwf/WeatherGenerator/issues/3031), self-found and reproduced end-to-end before filing | ⚪ Closed unmerged — same external-PR sweep |
+
+<a name="fastmcp"></a>
+
+## <img src="https://github.com/PrefectHQ.png" width="24" alt="fastmcp"> fastmcp
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#6180 — decode RFC 6901 escapes when extracting `$defs` names](https://github.com/PrefectHQ/fastmcp/pull/6180) | JSON-pointer-escaped schema names broke schema extraction — fixes [#6034](https://github.com/PrefectHQ/fastmcp/issues/6034) | ✅ Merged — maintainer finalized the branch himself before merging |
+| [#6185 — keep `tools/list` working when a root `$ref` resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185) | whole-server tools listing crashed on valid schemas — fixes [#6125](https://github.com/PrefectHQ/fastmcp/issues/6125) | ✅ Merged |
+| [#6187 — support non-identifier variables in URI templates](https://github.com/PrefectHQ/fastmcp/pull/6187) | `{$top}`-style template variables never matched or forwarded; Unicode word characters that identifiers reject also disabled templates | ✅ Merged |
+| [#6214 — apply tool transforms before tag filters on single servers](https://github.com/PrefectHQ/fastmcp/pull/6214) | tags added by a server's `tools` config were invisible to `include_tags`/`exclude_tags` on single-server MCPConfigs — fixes [#6196](https://github.com/PrefectHQ/fastmcp/issues/6196) | ✅ Merged |
+| [#6188 — keep result hydration faithful for union coercions](https://github.com/PrefectHQ/fastmcp/pull/6188) | `0 → False`-style coercions silently replaced typed results; final guard also preserves schema-intended `format: json` decodes and rejects precision-losing timestamp truncation | 🟡 Open · survived three adversarial review rounds with same-session fixes · awaiting human review |
+| [#6440 — compare pinned tool versions PEP 440-normalized against the listed version](https://github.com/PrefectHQ/fastmcp/pull/6440) | calling a versioned tool by an equivalent version spelling (`"1"` for a listed `"1.0"`) ran the listed tool but silently skipped output-schema hydration and result revalidation, because the client compared versions as strings while the server matches PEP 440-normalized — fixes [#6439](https://github.com/PrefectHQ/fastmcp/issues/6439) | 🔒 Bot-closed under the require-issue-link gate — auto-reopens if [#6439](https://github.com/PrefectHQ/fastmcp/issues/6439) is assigned |
+
+<a name="layer5"></a>
+
+## <img src="https://github.com/layer5io.png" width="24" alt="layer5"> layer5
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#8277 — case-study banner fits its container on mobile](https://github.com/layer5io/layer5/pull/8277) | logo/graphic overflowed on small viewports — fixes [#8272](https://github.com/layer5io/layer5/issues/8272) | 🟢 Reviewed "no changes needed" · awaiting merge |
+| [#8278 — pricing cards reference real tier names](https://github.com/layer5io/layer5/pull/8278) | bylines named tiers that don't exist ("Free", "Team") — fixes [#8258](https://github.com/layer5io/layer5/issues/8258) | 🟢 Reviewed "no changes needed" · awaiting merge |
+| [#8279 — Sistent icons docs: valid imports, preview matches snippet](https://github.com/layer5io/layer5/pull/8279) | docs snippet imported non-existent exports; preview didn't match the code — fixes [#8257](https://github.com/layer5io/layer5/issues/8257) | ⚪ Reviewed "no changes needed" · closed in favor of the maintainer-assigned [#8291](https://github.com/layer5io/layer5/pull/8291), which merged |
+| [#8280 — Heading 1 design token stays in viewport on mobile](https://github.com/layer5io/layer5/pull/8280) | 6rem default heading overflowed phones — fixes [#8267](https://github.com/layer5io/layer5/issues/8267) | 🟢 Reviewed "no changes needed" · awaiting merge |
+| [#8281 — carousel arrows visible and clickable on mobile](https://github.com/layer5io/layer5/pull/8281) | arrows flickered, clipped off-screen at ≤ 850px — fixes [#8275](https://github.com/layer5io/layer5/issues/8275) | 🟢 Reviewed "no changes needed" · awaiting merge |
+
+<a name="mem0"></a>
+
+## <img src="https://github.com/mem0ai.png" width="24" alt="mem0"> mem0
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#7795 — close owned pgvector connection pools on `Memory.close()`](https://github.com/mem0ai/mem0/pull/7795) | long-running hosts ran out of Postgres connections; now self-contained: `PGVector.close()` + ownership tracking + the `Memory.close()` wiring + a live-server regression test — fixes [#7771](https://github.com/mem0ai/mem0/issues/7771). Verified in production by the issue reporter | 🔒 Bot-closed under the issue-triage gate — auto-reopens if [#7771](https://github.com/mem0ai/mem0/issues/7771) is accepted |
+| [#7797 — apply every operator on multi-operator Qdrant filters (TS SDK)](https://github.com/mem0ai/mem0/pull/7797) | `ne`/`nin` merged into one clause; `AND` branches overwrote each other — fixes [#7762](https://github.com/mem0ai/mem0/issues/7762) | 🔒 Bot-closed under the issue-triage gate — auto-reopens if [#7762](https://github.com/mem0ai/mem0/issues/7762) is accepted |
+| [#7808 — honor explicitly configured default user_id in the Hermes plugin](https://github.com/mem0ai/mem0/pull/7808) | placeholder-collapse made an explicitly chosen default pool unreachable; gateway-native ids stranded memories — fixes [#7799](https://github.com/mem0ai/mem0/issues/7799) | 🔒 Bot-closed under the issue-triage gate — auto-reopens if [#7799](https://github.com/mem0ai/mem0/issues/7799) is accepted |
+
+<a name="nicegui"></a>
+
+## <img src="https://github.com/zauberzeug.png" width="24" alt="NiceGUI"> NiceGUI
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#6468 — fix missing Torus export from the scene objects package](https://github.com/zauberzeug/nicegui/pull/6468) | `Torus` shipped in 3.19.0 with a scene method but the objects package forgot the import and `__all__` entry, so the documented import path raised `ImportError` | ⚪ Closed — same fix already open as [#6461](https://github.com/zauberzeug/nicegui/pull/6461) by the issue reporter and scheduled for 4.1 |
+
+<a name="ollama"></a>
+
+## <img src="https://github.com/ollama.png" width="24" alt="ollama-python"> ollama-python
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#784 — skip blank lines in streaming NDJSON responses](https://github.com/ollama/ollama-python/pull/784) | a blank line anywhere in a streamed body (proxies, compatible servers re-chunking responses) crashed `generate(stream=True)` / `chat(stream=True)` with a raw `JSONDecodeError` | 🟡 Open · awaiting review |
+| [#785 — union tool parameter types serialize as a JSON Schema type array](https://github.com/ollama/ollama-python/pull/785) | union parameter types produced an invalid comma-joined `type` (`"string, integer"`), nondeterministically ordered | 🟡 Open · awaiting review |
+| [#786 — `Message.get` aligned with `__contains__` semantics](https://github.com/ollama/ollama-python/pull/786) | declared-but-unset fields returned `None` instead of the caller's default, and non-field names leaked through `.get()` | 🟡 Open · awaiting review |
+| [#788 — `ResponseError` survives non-object JSON error bodies](https://github.com/ollama/ollama-python/pull/788) | a gateway/proxy error body of `null`, `[]`, or a bare JSON string crashed error construction with `AttributeError`, masking the real HTTP failure | 🟡 Open · awaiting review |
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#787 — `Tool.model_dump()` leaks the `defs` field name instead of `$defs`](https://github.com/ollama/ollama-python/issues/787) | verified serialization asymmetry between direct dumps and request-path dumps; two fix options documented for maintainers | 🟡 Awaiting maintainer decision — PR offered |
+
+<a name="pypdf"></a>
+
+## <img src="https://github.com/py-pdf.png" width="24" alt="pypdf"> pypdf
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#4353 — guard the remaining non-dictionary /Resources accesses](https://github.com/py-pdf/pypdf/pull/4353) | two code paths (font listing and inline-image color-space lookup) still crashed with `TypeError` when `/Resources` was not a dictionary — the same robustness class fixed twice elsewhere in the codebase — fixes [#4352](https://github.com/py-pdf/pypdf/issues/4352), a self-found bug located by mining that repeated fix pattern | ✅ Merged — after the full review cycle: coverage requested and covered, five maintainer suggestions applied (two test-proven corrections to the suggestions themselves) |
+| [#4420 — raise PdfReadError for a non-array trailer /ID](https://github.com/py-pdf/pypdf/pull/4420) | a corrupted trailer whose `/ID` entry is a non-array value (e.g. a bare string) is silently exposed inside the document instead of raising a read error — now a clean `PdfReadError` with probe tables — fixes [#4418](https://github.com/py-pdf/pypdf/issues/4418), filed by us | 🟢 Open · in review · CI fully green (style job + codecov resolved) |
+
+<a name="powertools"></a>
+
+## <img src="https://github.com/aws-powertools.png" width="24" alt="Powertools"> Powertools for AWS Lambda (Python)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#8757 — ignore malformed `POWERTOOLS_PARAMETERS_MAX_AGE` instead of crashing](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) | an empty or non-integer cache-TTL environment variable raised a raw `ValueError` from all 12 Parameters/Secrets/AppConfig entry points before any AWS call; now warns and falls back to the documented default per the project's compatibility ADR — fixes [#8747](https://github.com/aws-powertools/powertools-lambda-python/issues/8747) | ✅ Merged — maintainer ran the whole parameters suite on develop before approving; ships in the 3.41.0 release notes |
+
+<a name="rai-toolkit"></a>
+
+## <img src="https://github.com/wandb.png" width="24" alt="rai-toolkit"> rai-toolkit (Weights & Biases)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#130 — report model-ref load failures without a traceback](https://github.com/wandb/rai-toolkit/pull/130) | `rai assess <model-ref>` crashed with raw Python tracebacks for malformed refs, missing modules, and missing classes — now a clean input error, while a valid model's own factory or constructor failures keep their original exception and traceback | ✅ Merged — after a full human review cycle: changes requested on the exception boundary, corrected to the maintainer's spec, approved |
+
+<a name="reflex"></a>
+
+## <img src="https://github.com/reflex-dev.png" width="24" alt="reflex"> reflex
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#7701 — keep literal `reflex.Var` tag text from hanging or corrupting string vars](https://github.com/reflex-dev/reflex/pull/7701) | any string prop containing literal `<reflex.Var>…</reflex.Var>` text hung the compiler in an infinite loop, crashed with `KeyError`/`IndexError`, or silently lost the text in rendered output | ⚪ Closed by the maintainer — approach declined (no use case for the syntax); accepted gracefully |
+| [#7703 — `rx.asset(shared=True)` crash on Windows without Developer Mode](https://github.com/reflex-dev/reflex/pull/7703) | symlink creation denied → whole app failed to compile; fix falls back to hardlink, then to a writable copy, keeping later compiles replaceable | 🟡 Open · passed three rounds of automated review · awaiting human review |
+| [#7704 — remove unused `path_ops.ln`](https://github.com/reflex-dev/reflex/pull/7704) | the public path helper did the exact opposite of `ln -s` semantics; the maintainer, on review, preferred removing it once the zero-callers search was confirmed — the PR was converted to the removal with a breaking-change changelog note | 🟡 Open · converted to removal on the maintainer's review · awaiting merge |
+| [#7707 — drop the f-string Var marker from array ref names](https://github.com/reflex-dev/reflex/pull/7707) | the array ref formatter folded a per-run hash into compiled ref names, defeating reproducible builds — follow-up to #7691 | ✅ Merged by the maintainer |
+
+| Bug report | What it documents | Status |
+|---|---|---|
+| [#7705 — hardlink/copy fallback assets aren't cleaned up when sources vanish](https://github.com/reflex-dev/reflex/issues/7705) | design question with three solution options; tracked in the project's internal backlog (ENG-13670) | 🟡 Awaiting maintainer decision |
+
+<a name="simple-invoicing"></a>
+
+## <img src="https://github.com/nikhilb2.png" width="24" alt="simple_invoicing"> simple_invoicing
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#677 — reject whitespace-only API key names](https://github.com/nikhilb2/simple_invoicing/pull/677) | `POST /api/api-keys/` saved a name of only spaces as an empty string; now returns 422 | ✅ Merged — within the hour of opening |
+| [#678 — reject blank units and unknown statuses on product update](https://github.com/nikhilb2/simple_invoicing/pull/678) | product updates silently accepted a blank unit and any status string; now reuses the create-path unit validation and bounds status to active/inactive with 422s | ✅ Merged — the same day, after addressing a maintainer change request with the requested API-level test |
 
 ---
 
-*This page is the running index — it updates as pull requests move through review and merge, in the order the work happened.*
+*This page is the running index — every status above is live-verified against the GitHub API before each update. Reviews, merges and closures move the numbers in the header.*
 
 **Open to internships and entry-level backend / infrastructure roles** · [GitHub](https://github.com/AP24110011695) · [LinkedIn](https://www.linkedin.com/in/ayush-kumar-saha-5126b6379)
