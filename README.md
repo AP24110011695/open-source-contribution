@@ -22,7 +22,7 @@ Every repeat `pipx ensurepath` run claimed it had appended directories to PATH w
 Two code paths still crashed with `TypeError` on malformed PDFs — the same robustness class the project had already fixed twice elsewhere; located by mining that repeated fix pattern for unfixed siblings. **Merged after the full review cycle** — coverage requested and covered, five maintainer suggestions applied, two of them test-proven corrections to the suggestions themselves.
 
 **[AWS Lambda Powertools — tolerate a malformed parameters cache-TTL environment variable](https://github.com/aws-powertools/powertools-lambda-python/pull/8757)**
-An empty or non-integer `POWERTOOLS_PARAMETERS_MAX_AGE` crashed all 12 parameters entry points before any AWS call; now warns and falls back to the documented default. **Merged after the maintainer ran the whole parameters suite himself** — ships in the 3.41.0 release notes.
+An empty or non-integer `POWERTOOLS_PARAMETERS_MAX_AGE` crashed all 12 parameters entry points before any AWS call; now warns and falls back to the documented default. **Merged after the maintainer ran the whole parameters suite himself** — released in [v3.41.0](https://github.com/aws-powertools/powertools-lambda-python/releases/tag/v3.41.0), credited by name in the release notes.
 
 **[fastmcp — keep tools/list working when a root $ref resolves to a boolean schema](https://github.com/PrefectHQ/fastmcp/pull/6185)**
 A valid JSON Schema (`$ref` resolving to `true`/`false`) crashed whole-server tool listing during client init. **Merged with two sibling fixes in the same batch** — URI-template variables and tag-filter ordering — four merges in one day.
@@ -426,7 +426,7 @@ I also review pull requests from other contributors. An approval from me means I
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#8757 — ignore malformed `POWERTOOLS_PARAMETERS_MAX_AGE` instead of crashing](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) | an empty or non-integer cache-TTL environment variable raised a raw `ValueError` from all 12 Parameters/Secrets/AppConfig entry points before any AWS call; now warns and falls back to the documented default per the project's compatibility ADR — fixes [#8747](https://github.com/aws-powertools/powertools-lambda-python/issues/8747) | ✅ Merged — maintainer ran the whole parameters suite on develop before approving; ships in the 3.41.0 release notes |
+| [#8757 — ignore malformed `POWERTOOLS_PARAMETERS_MAX_AGE` instead of crashing](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) | an empty or non-integer cache-TTL environment variable raised a raw `ValueError` from all 12 Parameters/Secrets/AppConfig entry points before any AWS call; now warns and falls back to the documented default per the project's compatibility ADR — fixes [#8747](https://github.com/aws-powertools/powertools-lambda-python/issues/8747) | ✅ Merged — maintainer ran the whole parameters suite on develop before approving; released in v3.41.0, credited by name in the release notes |
 
 <a name="rai-toolkit"></a>
 
