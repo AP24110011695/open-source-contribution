@@ -145,6 +145,7 @@ I also review pull requests from other contributors. An approval from me means I
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#3528 — skip generated-file-link tests without symlinks](https://github.com/pypa/virtualenv/pull/3528) | the generated-file-links test suite created symlinks directly, so every Windows contributor without Developer Mode saw 20 failures (`WinError 1314`) no change of theirs could fix — the suite now skips via the repo's own `fs_supports_symlink` probe, the idiom two other test files already used | ✅ Merged — maintainer merged main in and aligned the skip reason at merge |
+| [#3569 — periodic update selection depended on the update log's insertion order](https://github.com/pypa/virtualenv/issues/3569) | `_select_version` grouped the update log assuming newest-first order, but successive updates interleave minors — a patch of an older minor downloaded by a later update landed before the newer minor's entry, splitting its group and letting an older version win the seed pick even past every grace period; verified live on main with a probe — the maintainer took the finding, diagnosed yanked releases as the real-world trigger, and shipped a yank-detection subsystem (`index.py` + drop-at-update-start) that resolves it; the issue closed as completed via his [#3570](https://github.com/pypa/virtualenv/pull/3570) | ✅ Closed — resolved via the maintainer's rework on my PR thread |
 
 <a name="wheel"></a>
 
