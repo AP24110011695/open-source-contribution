@@ -2,7 +2,7 @@
 
 I find and fix real bugs in production open-source projects — by reading the code, writing the failing test first, and shipping small, reviewed changes. Everything on this page is real and linked.
 
-**26 pull requests merged** · **31 projects** · **18 code reviews of other contributors' PRs (12 approvals — 7 of the reviewed PRs have since merged)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
+**26 pull requests merged** · **32 projects** · **18 code reviews of other contributors' PRs (12 approvals — 7 of the reviewed PRs have since merged)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
 
 Languages & domains: Python · Go · Java · Rust · C/C++ · TypeScript — CLI tooling, PDF parsing, ML infrastructure, data formats, CI & packaging, monitoring, pub-sub messaging
 
@@ -341,6 +341,14 @@ I also review pull requests from other contributors. An approval from me means I
 | [#11414 — `LinearTools.update_issue` rejects its own documented call](https://github.com/agno-agi/agno/issues/11414) | GraphQL `$title: String!` non-null variable bound to `None` — the documented "title unchanged" call always fails; state updates advertised but impossible | 🟡 Reported · community contributor implementing; our fix + 6 tests staged |
 | [#11415 — `custom_scrape_website` returns field names instead of scraped data](https://github.com/agno-agi/agno/issues/11415) | dict-key iteration returned the query's schema instead of the page content; also repaired the module's broken test fixtures and revived a maintainer-skipped test | 🟡 Reported · community contributor implementing; our fix + tests staged |
 | [#11421 — toolkit HTTP calls without a timeout can hang the agent thread](https://github.com/agno-agi/agno/issues/11421) | `requests` call sites in 2 toolkits wait forever on a degraded upstream — scope corrected after a community fact-check confirmed Bright Data/Serply were already fixed | 🟡 Reported · handed to a community contributor with the corrected scope |
+
+<a name="aws-amplify"></a>
+
+## <img src="https://github.com/aws-amplify.png" width="24" alt="AWS Amplify"> AWS Amplify (JavaScript)
+
+| Pull request | What it fixes | Status |
+|---|---|---|
+| [#15022 — encode UTF-8 bytes in the OAuth customState helpers](https://github.com/aws-amplify/amplify-js/pull/15022) | `urlSafeEncode` emitted a variable number of hex digits per code unit while `urlSafeDecode` always read 2 — any `signInWithRedirect` custom state above `U+00FF` (Polish, Greek, Arabic, CJK, emoji) came back corrupted and broke `JSON.parse` of the `customOAuthState` Hub event; v5-stable side of [#15019](https://github.com/aws-amplify/amplify-js/issues/15019) | 🟢 Open · on v5-stable · 14 tests, ASCII byte-for-byte identical |
 
 <a name="crewai"></a>
 
