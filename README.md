@@ -223,7 +223,7 @@ I also review pull requests from other contributors. An approval from me means I
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#27375 — handle empty values in FieldParser converters and setEmptyValue](https://github.com/apache/pulsar/pull/27375) | `stringToLong("")`/`stringToFloat("")` crashed with `NumberFormatException` while the Integer/Double siblings return `null` (their guard was never added to these two), and `setEmptyValue`'s String check compared the type object's class to `String.class` — always false — so blank values left stale Strings instead of clearing them — fixes [#27374](https://github.com/apache/pulsar/issues/27374), self-found by reading the config-parsing utilities against their own sibling patterns | 🟢 Open · in review |
+| [#27375 — handle empty values in FieldParser converters and setEmptyValue](https://github.com/apache/pulsar/pull/27375) | `stringToLong("")`/`stringToFloat("")` crashed with `NumberFormatException` while the Integer/Double siblings return `null` (their guard was never added to these two), and `setEmptyValue`'s String check compared the type object's class to `String.class` — always false — so blank values left stale Strings instead of clearing them — fixes [#27374](https://github.com/apache/pulsar/issues/27374), self-found by reading the config-parsing utilities against their own sibling patterns | 🟢 Open · two committer approvals (lhotari + codelipenghui) · first-contributor merge gate |
 
 | Bug report | What it documents | Status |
 |---|---|---|
