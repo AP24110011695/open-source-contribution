@@ -202,7 +202,7 @@ I also review pull requests from other contributors. An approval from me means I
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#8484 — trim whitespace in `normalize_root`](https://github.com/apache/opendal/pull/8484) | `normalize_root`'s own documented rules say whitespace is trimmed (identical wording to `normalize_path`, which trims and is pinned-tested), but the code never did — a root configured as `" my-dir "` became `"/ my-dir /"` and every object path under the backend silently carried the spaces | 🟢 Open · in review |
+| [#8484 — trim whitespace in `normalize_root`](https://github.com/apache/opendal/pull/8484) | `normalize_root`'s own documented rules say whitespace is trimmed (identical wording to `normalize_path`, which trims and is pinned-tested), but the code never did — a root configured as `" my-dir "` became `"/ my-dir /"` and every object path under the backend silently carried the spaces | ⚪ Closed by Xuanwo — the whitespace-preserving behavior is the contract per accepted RFC #7799 (spaces can be valid path names, see #6577); graceful accept, the doc-vs-behavior mismatch observation stands |
 
 <a name="iceberg"></a>
 
@@ -235,7 +235,7 @@ I also review pull requests from other contributors. An approval from me means I
 
 | Pull request | What it fixes | Status |
 |---|---|---|
-| [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | ✅ Approved by aminghadersohi ("LGTM") · awaiting merge |
+| [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | ✅ Approved — aminghadersohi ("LGTM") + Evan Rusackas ("thanks for working through all of @aminghadersohi's notes. LGTM!") · merge-imminent |
 | [#46114 — support 'last day of' / 'last of' time range phrases](https://github.com/apache/superset/pull/46114) | the time-range lookup gave `first day of last quarter` a correct since-bound but silently degraded the until-bound to yesterday; the two new lookup entries mirror the first-day patterns with an end-of modifier — maintainer-verified ("the patterns resolve to the correct dates"), docs updated in-PR | ✅ Approved by aminghadersohi ("LGTM") · awaiting merge |
 
 | Bug report | What it documents | Status |
