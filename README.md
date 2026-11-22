@@ -2,7 +2,7 @@
 
 I find and fix real bugs in production open-source projects — by reading the code, writing the failing test first, and shipping small, reviewed changes. Everything on this page is real and linked.
 
-**29 pull requests merged** · **32 projects** · **19 code reviews of other contributors' PRs (12 approvals — 7 of the reviewed PRs have since merged)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
+**30 pull requests merged** · **32 projects** · **19 code reviews of other contributors' PRs (12 approvals — 7 of the reviewed PRs have since merged)** — across PyPA, Apache, CNCF, the Linux Foundation, Meta, AWS, ECMWF and Weights & Biases
 
 Languages & domains: Python · Go · Java · Rust · C/C++ · TypeScript — CLI tooling, PDF parsing, ML infrastructure, data formats, CI & packaging, monitoring, pub-sub messaging
 
@@ -68,6 +68,7 @@ One row per project — every merge is a clickable link. Details for each merge 
 | [**Powertools for AWS Lambda**](https://github.com/aws-powertools/powertools-lambda-python) (Python) | [#8757 — tolerate a malformed parameters cache-TTL environment variable](https://github.com/aws-powertools/powertools-lambda-python/pull/8757) |
 | [**virtualenv**](https://github.com/pypa/virtualenv) (PyPA) | [#3528 — skip generated-file-link tests without symlinks](https://github.com/pypa/virtualenv/pull/3528) · [#3570 — drop yanked releases from the update log](https://github.com/pypa/virtualenv/pull/3570) |
 | [**cibuildwheel**](https://github.com/pypa/cibuildwheel) (PyPA) | [#3049 — map unknown host machines to the graceful no-native-arch path](https://github.com/pypa/cibuildwheel/pull/3049) |
+| [**Superset**](https://github.com/apache/superset) (Apache) | [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) |
 
 ---
 
@@ -236,6 +237,7 @@ I also review pull requests from other contributors. An approval from me means I
 | Pull request | What it fixes | Status |
 |---|---|---|
 | [#46040 — reject deeply nested date expressions with a parse error](https://github.com/apache/superset/pull/46040) | `datetime_eval` converts only `ParseException`, but the date-expression grammar recurses once per nesting level — a pasted ~500-character time range (60–80 nested `dateadd(` calls, measured on master) exhausted the interpreter stack and hit the chart-data and Jinja paths as an unhandled `RecursionError` (500) instead of the parse error every other malformed expression produces — fixes [#46039](https://github.com/apache/superset/issues/46039), self-found by fix-commit mining the freshly-fixed date-parser area | ✅ Approved — aminghadersohi ("LGTM") + Evan Rusackas ("thanks for working through all of @aminghadersohi's notes. LGTM!") · merge-imminent |
+
 | [#46114 — support 'last day of' / 'last of' time range phrases](https://github.com/apache/superset/pull/46114) | the time-range lookup gave `first day of last quarter` a correct since-bound but silently degraded the until-bound to yesterday; the two new lookup entries mirror the first-day patterns with an end-of modifier — maintainer-verified ("the patterns resolve to the correct dates"), docs updated in-PR | ✅ Approved by aminghadersohi ("LGTM") · awaiting merge |
 
 | Bug report | What it documents | Status |
